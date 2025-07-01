@@ -1,0 +1,30 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
+package com.mycompany.bazar.service;
+
+import com.mycompany.bazar.model.Venta;
+import java.util.List;
+
+/**
+ *
+ * @author CharlyW
+ */
+public interface IVentaService {
+    
+    // lectura
+    public List<Venta> getVentas();
+
+    // lectura de un solo objeto
+    public Venta findVenta(Long id);
+
+    // alta
+    public void saveVenta(Venta venta);
+
+    // baja
+    public void deleteProducto(Long id);
+
+    // edicion
+    public void editProducto(Venta venta);
+}
