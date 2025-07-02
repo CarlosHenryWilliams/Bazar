@@ -27,8 +27,8 @@ public class ProductoService implements IProductoService{
 
     @Override
     public Producto findProducto(Long id) {
-        Producto pro = produRepo.findById(id).orElse(null);
-        return pro;
+        Producto produ = produRepo.findById(id).orElse(null);
+        return produ;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ClienteController {
     @PostMapping("/clientes/crear")
     public ResponseEntity<String> saveCliente(@RequestBody Cliente cli) {
         clienteServ.saveCliente(cli);
-        return new ResponseEntity<>("El cliente ha sido creado con exito.", HttpStatus.OK);
+        return new ResponseEntity<>("El cliente ha sido creado con exito.", HttpStatus.CREATED);
     }
 
     // baja
