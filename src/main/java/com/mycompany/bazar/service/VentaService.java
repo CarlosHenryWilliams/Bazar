@@ -37,12 +37,12 @@ public class VentaService implements IVentaService {
     }
 
     @Override
-    public void deleteProducto(Long id) {
+    public void deleteVenta(Long id) {
         ventaRepo.deleteById(id);
     }
 
     @Override
-    public void editProducto(Venta venta) {
+    public void editVenta(Venta venta) {
         this.saveVenta(venta);
     }
     

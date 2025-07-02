@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.bazar.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +29,9 @@ public class Venta {
     private Long codigoVenta;
     private LocalDate fechaVenta;
     private Double total;
-    @OneToMany(mappedBy = "venta")
-    private List<ItemVenta> ListaDeItems;
+    @OneToMany(mappedBy = "venta" , cascade = CascadeType.ALL) //  El cascade all hace que afecte tambien a los ItemVenta
+    @JsonIgnoreProperties("venta")
+    private List<ItemVenta> listaDeItems = new ArrayList<>(); // siempre va a tener una lista asi que esta bien inicializarla.
     
     @ManyToOne
     @JoinColumn(name = "idCliente")

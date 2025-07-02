@@ -23,8 +23,8 @@ public interface IVentaService {
     public void saveVenta(Venta venta);
 
     // baja
-    public void deleteProducto(Long id);
+    public void deleteVenta(Long id);
 
     // edicion
-    public void editProducto(Venta venta);
+    public void editVenta(Venta venta);
 }
