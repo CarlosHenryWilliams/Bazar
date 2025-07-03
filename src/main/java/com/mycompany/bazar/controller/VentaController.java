@@ -10,6 +10,7 @@ import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.service.IProductoService;
 import com.mycompany.bazar.service.IVentaService;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,13 +55,35 @@ public class VentaController {
     @PostMapping("/ventas/crear")
     public ResponseEntity<String> saveVenta(@RequestBody Venta venta) {
         Double totalVenta = 0D;
+        Boolean confirmarVenta = Boolean.TRUE;
+        // Recorro la lista de items de la venta
         for (ItemVenta item : venta.getListaDeItems()) {
+            // Encuentro cada producto
             Producto productoBD = produServ.findProducto(item.getProducto().getCodigoProducto());
-            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible()-item.getCantidad());
-            produServ.editProducto(productoBD);
-            totalVenta = totalVenta + productoBD.getCosto() * item.getCantidad();
-            item.setVenta(venta);
+            if (productoBD == null) {
+                return new ResponseEntity<>("El producto con el codigo :  " + item.getProducto().getCodigoProducto() + " no se encuentra.", HttpStatus.NOT_FOUND);
+            }
+            //Compruebo si toda la lista tiene stock
+            if (productoBD.getCantidadDisponible() < item.getCantidad()) {
+                confirmarVenta = Boolean.FALSE; // si no hay stock la venta queda en false
+            }
+
+            if (!confirmarVenta) {
+                return new ResponseEntity<>("No hay stock suficiente para el producto: " + productoBD.getNombre() + " con el codigo: " + productoBD.getCodigoProducto() + ". Stock actual: "+productoBD.getCantidadDisponible() + " - Cantidad pedida: " + item.getCantidad(), HttpStatus.BAD_REQUEST);
+            }
         }
+        // Si hay suficiente stock
+        for (ItemVenta item : venta.getListaDeItems()) {
+            // Encuentro cada producto
+            Producto productoBD = produServ.findProducto(item.getProducto().getCodigoProducto());
+            // Descuento stock del producto
+            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() - item.getCantidad());
+            produServ.editProducto(productoBD);
+            // Calculo el costo total
+            totalVenta = totalVenta + productoBD.getCosto() * item.getCantidad();
+            item.setVenta(venta); // Vinculo la venta al item que se vendio
+        }
+
         venta.setTotal(totalVenta);
         ventaServ.saveVenta(venta);
         return new ResponseEntity<>("La venta se ha realizado correctamente.", HttpStatus.CREATED);
@@ -73,6 +96,16 @@ public class VentaController {
         Venta ventaAEliminar = ventaServ.findVenta(id);
         if (ventaAEliminar == null) {
             return new ResponseEntity<>("La venta con el codigo: " + id + " no ha sido encontrada.", HttpStatus.NOT_FOUND);
+        }
+
+        // Recorro la lista de items de la venta
+        for (ItemVenta item : ventaAEliminar.getListaDeItems()) {
+            // Encuentro cada producto
+            Producto productoBD = produServ.findProducto(item.getProducto().getCodigoProducto());
+            // Devuelvo la cantidad que se pidio agregandolo como stock del producto - ya que si no se vendio no se desconto
+            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() + item.getCantidad());
+            produServ.editProducto(productoBD);
+            // Calculo el costo total
         }
         ventaServ.deleteVenta(id);
         return new ResponseEntity<>("La venta con el codigo:" + id + " ha sido eliminada", HttpStatus.OK);

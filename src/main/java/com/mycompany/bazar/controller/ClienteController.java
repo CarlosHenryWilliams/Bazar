@@ -27,12 +27,10 @@ public class ClienteController {
 
     @Autowired
     IClienteService clienteServ;
-
     // lectura 
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> getClientes() {
         List<Cliente> listaClientes = clienteServ.getClientes();
-
         return new ResponseEntity<>(listaClientes, HttpStatus.OK);
     }
 
