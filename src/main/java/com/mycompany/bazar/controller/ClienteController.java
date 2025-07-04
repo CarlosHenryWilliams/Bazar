@@ -27,6 +27,7 @@ public class ClienteController {
 
     @Autowired
     IClienteService clienteServ;
+
     // lectura 
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> getClientes() {
@@ -54,12 +55,11 @@ public class ClienteController {
     // baja
     @DeleteMapping("/clientes/eliminar/{id}")
     public ResponseEntity<String> deleteCliente(@PathVariable Long id) {
-        Cliente cliente = clienteServ.findCliente(id);
-        if (cliente == null) {
+       Boolean clienteEliminado = clienteServ.deleteCliente(id);
+        if (!clienteEliminado) {
             return new ResponseEntity<>("El cliente con el id: " + id + " no se encuentra.", HttpStatus.NOT_FOUND);
         }
 
-        clienteServ.deleteCliente(id);
         return new ResponseEntity<>("El cliente ha sido borrado con exito", HttpStatus.OK);
 
     }
@@ -67,16 +67,10 @@ public class ClienteController {
     // edicion
     @PutMapping("/clientes/editar")
     public ResponseEntity<Cliente> editCliente(@RequestBody Cliente cli) {
-        Cliente cliente = clienteServ.findCliente(cli.getIdCliente());
+        Cliente cliente = clienteServ.editCliente(cli); // lo devuelve editado si todo sale bien y si no null
         if (cliente == null) {
             return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
         }
-        // si es el mismo id, lo edita si no avisa
-        cliente.setNombre(cli.getNombre());
-        cliente.setApellido(cli.getApellido());
-        cliente.setDni(cli.getDni());
-        clienteServ.editCliente(cliente);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
-
     }
 }

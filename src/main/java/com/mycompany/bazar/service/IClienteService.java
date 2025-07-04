@@ -23,9 +23,9 @@ public interface IClienteService {
     public void saveCliente(Cliente cli);
 
     // baja
-    public void deleteCliente(Long id);
+    public Boolean deleteCliente(Long id);
 
     // edicion
-    public void editCliente(Cliente cli);
+    public Cliente editCliente(Cliente cli);
 
 }
