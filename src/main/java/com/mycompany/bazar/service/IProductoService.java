@@ -23,13 +23,12 @@ public interface IProductoService {
     public void saveProducto(Producto produ);
 
     // baja
-    public void deleteProducto(Long id);
+    public Boolean deleteProducto(Long id);
 
     // edicion
-    public void editProducto(Producto produ);
+    public Producto editProducto(Producto produ);
     
     // Traer productos con falta de sstock
-    
     public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad);
     
 }

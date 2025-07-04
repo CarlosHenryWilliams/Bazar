@@ -31,10 +31,8 @@ public class ProductoController {
     // lectura
     @GetMapping("/productos")
     public ResponseEntity<List<Producto>> getProductos() {
-
         List<Producto> listaProductos = produServ.getProductos();
         return new ResponseEntity<>(listaProductos, HttpStatus.OK);
-
     }
 
     // lectura de un solo objeto
@@ -57,36 +55,25 @@ public class ProductoController {
     // baja
     @DeleteMapping("/productos/eliminar/{id}")
     public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
-        Producto productoEncontrado = produServ.findProducto(id);
-        if (productoEncontrado == null) {
+        Boolean productoAEliminar = produServ.deleteProducto(id);
+        if (!productoAEliminar) {
             return new ResponseEntity<>("El Producto con el codigo: " + id + " no se encuentra.", HttpStatus.NOT_FOUND);
         }
-        produServ.deleteProducto(id);
         return new ResponseEntity<>("Se ha eliminado el producto con el codigo: " + id + " con exito.", HttpStatus.OK);
     }
 
     // edicion
     @PutMapping("/productos/editar")
     public ResponseEntity<Producto> editProducto(@RequestBody Producto produ) {
-        Producto productoEncontrado = produServ.findProducto(produ.getCodigoProducto());
-        if (productoEncontrado == null) {
-            return new ResponseEntity<>(productoEncontrado, HttpStatus.NOT_FOUND);
+        Producto productoAEditar = produServ.editProducto(produ);
+        if (productoAEditar == null) {
+            return new ResponseEntity<>(productoAEditar, HttpStatus.NOT_FOUND);
         }
-        productoEncontrado.setNombre(produ.getNombre());
-        productoEncontrado.setMarca(produ.getMarca());
-        productoEncontrado.setCosto(produ.getCosto());
-        productoEncontrado.setCantidadDisponible(produ.getCantidadDisponible());
-        produServ.editProducto(productoEncontrado);
-        return new ResponseEntity<>(productoEncontrado, HttpStatus.OK);
-
+        return new ResponseEntity<>(productoAEditar, HttpStatus.OK);
     }
-    
-    
+
     @GetMapping("/productos/falta_stock")
-    public ResponseEntity<List<Producto>>  findBycantidadDisponibleLessThan(){
-        return  new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
-               
+    public ResponseEntity<List<Producto>> findBycantidadDisponibleLessThan() {
+        return new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
     }
-    
-
 }

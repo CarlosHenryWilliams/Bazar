@@ -37,13 +37,28 @@ public class ProductoService implements IProductoService{
     }
 
     @Override
-    public void deleteProducto(Long id) {
+    public Boolean deleteProducto(Long id) {
+        Producto produ = this.findProducto(id);
+        if(produ == null ){
+            return false;
+        }
         produRepo.deleteById(id);
+        return true;
     }
 
     @Override
-    public void editProducto(Producto produ) {
-        this.saveProducto(produ);
+    public Producto editProducto(Producto produ) {
+        
+         Producto producto = this.findProducto(produ.getCodigoProducto());
+        if (producto == null) {
+          return producto;
+        }
+        producto.setNombre(produ.getNombre());
+        producto.setMarca(produ.getMarca());
+        producto.setCosto(produ.getCosto());
+        producto.setCantidadDisponible(produ.getCantidadDisponible());
+        this.saveProducto(producto);
+        return producto;
     }
 
     @Override

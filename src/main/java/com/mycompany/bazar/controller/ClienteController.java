@@ -55,13 +55,11 @@ public class ClienteController {
     // baja
     @DeleteMapping("/clientes/eliminar/{id}")
     public ResponseEntity<String> deleteCliente(@PathVariable Long id) {
-       Boolean clienteEliminado = clienteServ.deleteCliente(id);
-        if (!clienteEliminado) {
+       Boolean clienteAEliminar = clienteServ.deleteCliente(id);
+        if (!clienteAEliminar) {
             return new ResponseEntity<>("El cliente con el id: " + id + " no se encuentra.", HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>("El cliente ha sido borrado con exito", HttpStatus.OK);
-
     }
 
     // edicion
