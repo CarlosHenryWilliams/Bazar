@@ -45,5 +45,10 @@ public class ProductoService implements IProductoService{
     public void editProducto(Producto produ) {
         this.saveProducto(produ);
     }
+
+    @Override
+    public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad) {
+        return produRepo.findBycantidadDisponibleLessThan(cantidad);
+    }
     
 }

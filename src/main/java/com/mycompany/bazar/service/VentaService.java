@@ -4,6 +4,7 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.repository.IVentaRepository;
 import java.util.List;
@@ -44,6 +45,15 @@ public class VentaService implements IVentaService {
     @Override
     public void editVenta(Venta venta) {
         this.saveVenta(venta);
+    }
+
+    @Override
+    public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta) {
+        Venta ventaEncontrada = this.findVenta(codigoVenta);
+        
+        
+        return ventaEncontrada.getListaDeItems();
+        
     }
     
     

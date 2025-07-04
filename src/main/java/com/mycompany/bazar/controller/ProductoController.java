@@ -80,5 +80,13 @@ public class ProductoController {
         return new ResponseEntity<>(productoEncontrado, HttpStatus.OK);
 
     }
+    
+    
+    @GetMapping("/productos/falta_stock")
+    public ResponseEntity<List<Producto>>  findBycantidadDisponibleLessThan(){
+        return  new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
+               
+    }
+    
 
 }

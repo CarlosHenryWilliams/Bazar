@@ -69,7 +69,7 @@ public class VentaController {
             }
 
             if (!confirmarVenta) {
-                return new ResponseEntity<>("No hay stock suficiente para el producto: " + productoBD.getNombre() + " con el codigo: " + productoBD.getCodigoProducto() + ". Stock actual: "+productoBD.getCantidadDisponible() + " - Cantidad pedida: " + item.getCantidad(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("No hay stock suficiente para el producto: " + productoBD.getNombre() + " con el codigo: " + productoBD.getCodigoProducto() + ". Stock actual: " + productoBD.getCantidadDisponible() + " - Cantidad pedida: " + item.getCantidad(), HttpStatus.BAD_REQUEST);
             }
         }
         // Si hay suficiente stock
@@ -111,7 +111,10 @@ public class VentaController {
         return new ResponseEntity<>("La venta con el codigo:" + id + " ha sido eliminada", HttpStatus.OK);
     }
 
-    // edicion
+    // edicion REVISAR BIEN
+    /// Aumentar o reducir stock 
+    /// Contemplar que el producto exista,
+    /// 
     @PutMapping("/ventas/editar")
     public ResponseEntity<Venta> editVenta(@RequestBody Venta venta) {
         Venta ventaEncontrada = ventaServ.findVenta(venta.getCodigoVenta());
@@ -120,4 +123,11 @@ public class VentaController {
         }
         return new ResponseEntity<>(ventaEncontrada, HttpStatus.OK);
     }
+
+    @GetMapping("/ventas/productos/{codigoVenta}")
+    public ResponseEntity<List<ItemVenta>> findlistaDeItemsByCodigoVenta(@PathVariable Long codigoVenta) {
+         List<ItemVenta> listaItems = ventaServ.findlistaDeItemsByCodigoVenta(codigoVenta);
+        return new ResponseEntity<>(listaItems,HttpStatus.OK);
+    }
+
 }

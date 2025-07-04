@@ -41,7 +41,6 @@ public class ClienteController {
         if (cliente == null) {
             return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 

@@ -27,4 +27,9 @@ public interface IProductoService {
 
     // edicion
     public void editProducto(Producto produ);
+    
+    // Traer productos con falta de sstock
+    
+    public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad);
+    
 }

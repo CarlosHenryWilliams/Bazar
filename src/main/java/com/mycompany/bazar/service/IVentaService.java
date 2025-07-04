@@ -4,6 +4,7 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @author CharlyW
  */
 public interface IVentaService {
-    
+
     // lectura
     public List<Venta> getVentas();
 
@@ -27,4 +28,6 @@ public interface IVentaService {
 
     // edicion
     public void editVenta(Venta venta);
+
+    public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta);
 }
