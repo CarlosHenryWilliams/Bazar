@@ -5,7 +5,8 @@
 package com.mycompany.bazar.service;
 
 import com.mycompany.bazar.exception.InsufficientStockException;
-import com.mycompany.bazar.exception.ProductNotFoundException;
+import com.mycompany.bazar.exception.ProductoNotFoundException;
+import com.mycompany.bazar.exception.VentaNotFoundException;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.model.Venta;
@@ -35,11 +36,14 @@ public class VentaService implements IVentaService {
     @Override
     public Venta findVenta(Long id) {
         Venta ven = ventaRepo.findById(id).orElse(null);
+        if (ven == null) {
+            throw new VentaNotFoundException("La venta con el codigo: " + id + " no existe.");
+        }
         return ven;
     }
 
     @Override
-    public Boolean saveVenta(Venta venta) {
+    public void saveVenta(Venta venta) {
 
         Double totalVenta = 0D;
         // Recorro la lista de items de la venta
@@ -48,7 +52,7 @@ public class VentaService implements IVentaService {
             // Encuentro cada producto
             Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
             if (productoBD == null) { // si no se encuentra el producto
-                throw new ProductNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
+                throw new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
             }
             //Compruebo si toda la lista tiene stock
             if (productoBD.getCantidadDisponible() < item.getCantidad()) { // si piden mas de lo que tienen false
@@ -64,7 +68,7 @@ public class VentaService implements IVentaService {
             // Encuentro cada producto
             Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
             if (productoBD == null) { // si no se encuentra el producto
-                throw new ProductNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
+                throw new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
             }
             // Descuento stock del producto
             productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() - item.getCantidad());
@@ -76,11 +80,23 @@ public class VentaService implements IVentaService {
 
         venta.setTotal(totalVenta);
         ventaRepo.save(venta);
-        return true;
     }
 
     @Override
     public void deleteVenta(Long id) {
+        Venta ventaAEliminar = this.findVenta(id);
+        // Recorro la lista de items de la venta
+        for (ItemVenta item : ventaAEliminar.getListaDeItems()) {
+            // Encuentro cada producto
+            Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
+            if (productoBD == null) { // si no se encuentra el producto
+                throw new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
+            }
+            // Devuelvo la cantidad que se pidio agregandolo como stock del producto - ya que si no se vendio no se desconto
+            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() + item.getCantidad());
+            produRepo.save(productoBD);
+        }
+
         ventaRepo.deleteById(id);
     }
 
@@ -89,18 +105,15 @@ public class VentaService implements IVentaService {
     public Venta editVenta(Venta venta) {
         Venta ventaEncontrada = this.findVenta(venta.getCodigoVenta());
         Double costoTotal = 0D;
-        if (ventaEncontrada == null) {
-            return ventaEncontrada;
-        }
 
         // Primero devolver los items que compro al encontrar la venta en bd
         for (ItemVenta item : ventaEncontrada.getListaDeItems()) {
-            Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
+            Producto productoDB = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
 
-            if (productoBD == null) { // si no se encuentra el producto
-                throw new ProductNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
+            if (productoDB == null) { // si no se encuentra el producto
+                throw new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
             }
-            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() + item.getCantidad());
+            productoDB.setCantidadDisponible(productoDB.getCantidadDisponible() + item.getCantidad());
         }
         // 
 
@@ -108,7 +121,6 @@ public class VentaService implements IVentaService {
         for (ItemVenta item : venta.getListaDeItems()) {
             Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
             if (productoBD.getCantidadDisponible() < item.getCantidad()) { // si no hay stock;
-
                 throw new InsufficientStockException(
                         "No hay stock suficiente para el producto " + productoBD.getNombre()
                         + " con el codigo: " + productoBD.getCodigoProducto()
@@ -120,6 +132,9 @@ public class VentaService implements IVentaService {
         // Si hay stock hacer la venta
         for (ItemVenta item : venta.getListaDeItems()) {
             Producto productoDB = produRepo.findById(item.getProducto().getCodigoProducto()).orElse(null);
+            if (productoDB == null) { // si no se encuentra el producto
+                throw new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe.");
+            }
             if (productoDB.getCantidadDisponible() >= item.getCantidad()) {  // si hay stock
 
                 productoDB.setCantidadDisponible(productoDB.getCantidadDisponible() - item.getCantidad());

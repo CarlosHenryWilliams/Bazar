@@ -23,7 +23,7 @@ public interface IProductoService {
     public void saveProducto(Producto produ);
 
     // baja
-    public Boolean deleteProducto(Long id);
+    public void deleteProducto(Long id);
 
     // edicion
     public Producto editProducto(Producto produ);

@@ -4,6 +4,7 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.exception.ClienteNotFoundException;
 import com.mycompany.bazar.model.Cliente;
 import com.mycompany.bazar.repository.IClienteRepository;
 import java.util.List;
@@ -28,6 +29,9 @@ public class ClienteService implements IClienteService {
     @Override
     public Cliente findCliente(Long id) {
         Cliente cli = clienteRepo.findById(id).orElse(null);
+        if(cli == null){
+            throw new ClienteNotFoundException("El cliente con el id: " + id + " no existe.");
+        }
         return cli;
     }
 
@@ -37,24 +41,15 @@ public class ClienteService implements IClienteService {
     }
 
     @Override
-    public Boolean deleteCliente(Long id) {
+    public void deleteCliente(Long id) {
         Cliente clienteAEliminar = this.findCliente(id);
-        if (clienteAEliminar == null) {
-            return false;
-        }
-        clienteRepo.deleteById(id);
-        return true;
+        clienteRepo.deleteById(clienteAEliminar.getIdCliente());
     }
 
     @Override
     public Cliente editCliente(Cliente cli) {
-
         Cliente cliente = this.findCliente(cli.getIdCliente()); // busco al cliente
-
-        if (cliente == null) {
-            return cliente;
-        }
-        // si es el mismo id, lo edita si no avisa
+        // si existe, lo edito
         cliente.setNombre(cli.getNombre());
         cliente.setApellido(cli.getApellido());
         cliente.setDni(cli.getDni());

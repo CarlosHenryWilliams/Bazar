@@ -5,9 +5,7 @@
 package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.model.ItemVenta;
-import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.model.Venta;
-import com.mycompany.bazar.service.IProductoService;
 import com.mycompany.bazar.service.IVentaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +28,6 @@ public class VentaController {
 
     @Autowired
     IVentaService ventaServ;
-    @Autowired
-    IProductoService produServ;
 
     // lectura
     @GetMapping("/ventas")
@@ -44,21 +40,13 @@ public class VentaController {
     @GetMapping("/ventas/{id}")
     public ResponseEntity<Venta> findVenta(@PathVariable Long id) {
         Venta ventaEncontrada = ventaServ.findVenta(id);
-        if (ventaEncontrada == null) {
-            return new ResponseEntity<>(ventaEncontrada, HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(ventaEncontrada, HttpStatus.OK);
     }
 
     // alta
     @PostMapping("/ventas/crear")
     public ResponseEntity<String> saveVenta(@RequestBody Venta venta) {
-        
-        Boolean ventaConfirmada = ventaServ.saveVenta(venta);
-
-        if (!ventaConfirmada) {
-            return new ResponseEntity<>("Ha ocurrido un error con la venta ", HttpStatus.NOT_FOUND);
-        }
+        ventaServ.saveVenta(venta);
         return new ResponseEntity<>("La venta se ha realizado correctamente.", HttpStatus.CREATED);
     }
 
@@ -66,35 +54,14 @@ public class VentaController {
     // baja
     @DeleteMapping("/ventas/eliminar/{id}")
     public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
-        Venta ventaAEliminar = ventaServ.findVenta(id);
-        if (ventaAEliminar == null) {
-            return new ResponseEntity<>("La venta con el codigo: " + id + " no ha sido encontrada.", HttpStatus.NOT_FOUND);
-        }
-
-        // Recorro la lista de items de la venta
-        for (ItemVenta item : ventaAEliminar.getListaDeItems()) {
-            // Encuentro cada producto
-            Producto productoBD = produServ.findProducto(item.getProducto().getCodigoProducto());
-            // Devuelvo la cantidad que se pidio agregandolo como stock del producto - ya que si no se vendio no se desconto
-            productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() + item.getCantidad());
-            produServ.editProducto(productoBD);
-            // Calculo el costo total
-        }
         ventaServ.deleteVenta(id);
-        return new ResponseEntity<>("La venta con el codigo:" + id + " ha sido eliminada", HttpStatus.OK);
+        return new ResponseEntity<>("La venta con el codigo: " + id + " ha sido eliminada", HttpStatus.OK);
     }
 
-    // edicion REVISAR BIEN
-    /// Aumentar o reducir stock 
-    /// Contemplar que el producto exista,
-    /// 
+    // edit 
     @PutMapping("/ventas/editar")
     public ResponseEntity<Venta> editVenta(@RequestBody Venta venta) {
-       
-        Venta ventaEditada= ventaServ.editVenta(venta);
-        if (ventaEditada == null) {
-            return new ResponseEntity<>(ventaEditada, HttpStatus.NOT_FOUND);
-        }
+        Venta ventaEditada = ventaServ.editVenta(venta);
         return new ResponseEntity<>(ventaEditada, HttpStatus.OK);
     }
 

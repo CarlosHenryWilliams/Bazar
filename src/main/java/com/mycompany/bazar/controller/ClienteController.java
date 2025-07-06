@@ -39,9 +39,6 @@ public class ClienteController {
     @GetMapping("/clientes/{id}")
     public ResponseEntity<Cliente> findCliente(@PathVariable Long id) {
         Cliente cliente = clienteServ.findCliente(id);
-        if (cliente == null) {
-            return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
@@ -55,20 +52,14 @@ public class ClienteController {
     // baja
     @DeleteMapping("/clientes/eliminar/{id}")
     public ResponseEntity<String> deleteCliente(@PathVariable Long id) {
-       Boolean clienteAEliminar = clienteServ.deleteCliente(id);
-        if (!clienteAEliminar) {
-            return new ResponseEntity<>("El cliente con el id: " + id + " no se encuentra.", HttpStatus.NOT_FOUND);
-        }
+        clienteServ.deleteCliente(id);
         return new ResponseEntity<>("El cliente ha sido borrado con exito", HttpStatus.OK);
     }
 
     // edicion
     @PutMapping("/clientes/editar")
     public ResponseEntity<Cliente> editCliente(@RequestBody Cliente cli) {
-        Cliente cliente = clienteServ.editCliente(cli); // lo devuelve editado si todo sale bien y si no null
-        if (cliente == null) {
-            return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
-        }
+        Cliente cliente = clienteServ.editCliente(cli);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 }

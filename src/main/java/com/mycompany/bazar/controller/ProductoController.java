@@ -39,9 +39,6 @@ public class ProductoController {
     @GetMapping("/productos/{id}")
     public ResponseEntity<Producto> findProducto(@PathVariable Long id) {
         Producto produ = produServ.findProducto(id);
-        if (produ == null) {
-            return new ResponseEntity<>(produ, HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(produ, HttpStatus.OK);
     }
 
@@ -55,10 +52,7 @@ public class ProductoController {
     // baja
     @DeleteMapping("/productos/eliminar/{id}")
     public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
-        Boolean productoAEliminar = produServ.deleteProducto(id);
-        if (!productoAEliminar) {
-            return new ResponseEntity<>("El Producto con el codigo: " + id + " no se encuentra.", HttpStatus.NOT_FOUND);
-        }
+        produServ.deleteProducto(id);
         return new ResponseEntity<>("Se ha eliminado el producto con el codigo: " + id + " con exito.", HttpStatus.OK);
     }
 
@@ -66,9 +60,6 @@ public class ProductoController {
     @PutMapping("/productos/editar")
     public ResponseEntity<Producto> editProducto(@RequestBody Producto produ) {
         Producto productoAEditar = produServ.editProducto(produ);
-        if (productoAEditar == null) {
-            return new ResponseEntity<>(productoAEditar, HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(productoAEditar, HttpStatus.OK);
     }
 

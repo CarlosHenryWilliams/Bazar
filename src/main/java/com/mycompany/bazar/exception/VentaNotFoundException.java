@@ -8,9 +8,9 @@ package com.mycompany.bazar.exception;
  *
  * @author CharlyW
  */
-public class ProductNotFoundException extends  RuntimeException{
+public class VentaNotFoundException extends  RuntimeException{
 
-    public ProductNotFoundException(String message) {
+    public VentaNotFoundException(String message) {
         super(message);
     }
     

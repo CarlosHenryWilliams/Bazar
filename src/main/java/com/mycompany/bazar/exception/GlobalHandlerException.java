@@ -21,9 +21,21 @@ public class GlobalHandlerException {
         return new ResponseEntity<>("Error de stock: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handlerProductNotFoundException(ProductNotFoundException ex) {
+    
+    
+    /// NOT FOUND
+    @ExceptionHandler(ProductoNotFoundException.class)
+    public ResponseEntity<String> handlerProductNotFoundException(ProductoNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(VentaNotFoundException.class)
+    public ResponseEntity<String> handlerVentaNotFoundException(VentaNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(ClienteNotFoundException.class)
+    public ResponseEntity<String> handlerClienteNotFoundException(ClienteNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

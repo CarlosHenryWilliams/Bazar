@@ -21,7 +21,7 @@ public interface IVentaService {
     public Venta findVenta(Long id);
 
     // alta
-    public Boolean saveVenta(Venta venta);
+    public void saveVenta(Venta venta);
 
     // baja
     public void deleteVenta(Long id);
