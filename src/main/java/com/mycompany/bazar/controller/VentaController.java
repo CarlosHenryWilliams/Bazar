@@ -90,11 +90,12 @@ public class VentaController {
     /// 
     @PutMapping("/ventas/editar")
     public ResponseEntity<Venta> editVenta(@RequestBody Venta venta) {
-        Venta ventaEncontrada = ventaServ.findVenta(venta.getCodigoVenta());
-        if (ventaEncontrada == null) {
-            return new ResponseEntity<>(ventaEncontrada, HttpStatus.NOT_FOUND);
+       
+        Venta ventaEditada= ventaServ.editVenta(venta);
+        if (ventaEditada == null) {
+            return new ResponseEntity<>(ventaEditada, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(ventaEncontrada, HttpStatus.OK);
+        return new ResponseEntity<>(ventaEditada, HttpStatus.OK);
     }
 
     @GetMapping("/ventas/productos/{codigoVenta}")

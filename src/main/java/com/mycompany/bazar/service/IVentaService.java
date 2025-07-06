@@ -27,7 +27,7 @@ public interface IVentaService {
     public void deleteVenta(Long id);
 
     // edicion
-    public void editVenta(Venta venta);
+    public Venta  editVenta(Venta venta);
 
     public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta);
 }
