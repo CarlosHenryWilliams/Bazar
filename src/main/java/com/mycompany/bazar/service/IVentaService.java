@@ -6,6 +6,7 @@ package com.mycompany.bazar.service;
 
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -27,7 +28,12 @@ public interface IVentaService {
     public void deleteVenta(Long id);
 
     // edicion
-    public Venta  editVenta(Venta venta);
+    public Venta editVenta(Venta venta);
 
+    // Devuelve los productos de una venta 
     public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta);
+
+    // Devuelve todas las ventas con la cantidad y la suma de tal fecha
+    public List<String> findAllByfechaVentaMontoCantidad(LocalDate fecha);
+
 }

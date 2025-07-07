@@ -7,6 +7,7 @@ package com.mycompany.bazar.controller;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.service.IVentaService;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,10 +66,19 @@ public class VentaController {
         return new ResponseEntity<>(ventaEditada, HttpStatus.OK);
     }
 
+    // productos de una venta en especifico
     @GetMapping("/ventas/productos/{codigoVenta}")
     public ResponseEntity<List<ItemVenta>> findlistaDeItemsByCodigoVenta(@PathVariable Long codigoVenta) {
         List<ItemVenta> listaItems = ventaServ.findlistaDeItemsByCodigoVenta(codigoVenta);
         return new ResponseEntity<>(listaItems, HttpStatus.OK);
     }
+    
+    // monto total y cantidad de ventas en un dia
+    @GetMapping("/ventas/fecha/{fechaVenta}")
+    public ResponseEntity<String> findAllByfechaVentaMontoCantidad(@PathVariable LocalDate fechaVenta) {
+        List<String> listaDeDatos = ventaServ.findAllByfechaVentaMontoCantidad(fechaVenta);
+        return new ResponseEntity<>("Fecha: " + fechaVenta + "\nMonto Total: " + listaDeDatos.get(0) + " \nCantidad de ventas: " + listaDeDatos.get(1),HttpStatus.OK);
+    }
+    
 
 }

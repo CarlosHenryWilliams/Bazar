@@ -10,6 +10,7 @@ import com.mycompany.bazar.repository.IClienteRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -22,31 +23,33 @@ public class ClienteService implements IClienteService {
     IClienteRepository clienteRepo;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Cliente> getClientes() {
         return clienteRepo.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Cliente findCliente(Long id) {
-        Cliente cli = clienteRepo.findById(id).orElse(null);
-        if(cli == null){
-            throw new ClienteNotFoundException("El cliente con el id: " + id + " no existe.");
-        }
+        Cliente cli = clienteRepo.findById(id).orElseThrow(() -> new ClienteNotFoundException("El cliente con el id: " + id + " no existe."));
         return cli;
     }
 
     @Override
+    @Transactional
     public void saveCliente(Cliente cli) {
         clienteRepo.save(cli);
     }
 
     @Override
+    @Transactional
     public void deleteCliente(Long id) {
         Cliente clienteAEliminar = this.findCliente(id);
         clienteRepo.deleteById(clienteAEliminar.getIdCliente());
     }
 
     @Override
+    @Transactional
     public Cliente editCliente(Cliente cli) {
         Cliente cliente = this.findCliente(cli.getIdCliente()); // busco al cliente
         // si existe, lo edito

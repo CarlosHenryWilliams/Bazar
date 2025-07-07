@@ -10,6 +10,7 @@ import com.mycompany.bazar.repository.IProductoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -22,37 +23,35 @@ public class ProductoService implements IProductoService {
     IProductoRepository produRepo;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Producto> getProductos() {
         return produRepo.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Producto findProducto(Long id) {
-        Producto produ = produRepo.findById(id).orElse(null);
-        if (produ == null) {
-            throw new ProductoNotFoundException("El producto con el codigo: " + id + " no existe.");
-        }
+        Producto produ = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
         return produ;
     }
 
     @Override
+    @Transactional
     public void saveProducto(Producto produ) {
         produRepo.save(produ);
     }
 
     @Override
+    @Transactional
     public void deleteProducto(Long id) {
         Producto produ = this.findProducto(id);
         produRepo.deleteById(produ.getCodigoProducto());
     }
 
     @Override
+    @Transactional
     public Producto editProducto(Producto produ) {
-
         Producto producto = this.findProducto(produ.getCodigoProducto());
-        if (producto == null) {
-            return producto;
-        }
         producto.setNombre(produ.getNombre());
         producto.setMarca(produ.getMarca());
         producto.setCosto(produ.getCosto());
@@ -62,6 +61,7 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad) {
         return produRepo.findBycantidadDisponibleLessThan(cantidad);
     }

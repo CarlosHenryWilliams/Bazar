@@ -4,10 +4,12 @@
  */
 package com.mycompany.bazar.exception;
 
+import java.time.format.DateTimeParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  *
@@ -21,8 +23,6 @@ public class GlobalHandlerException {
         return new ResponseEntity<>("Error de stock: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    
-    
     /// NOT FOUND
     @ExceptionHandler(ProductoNotFoundException.class)
     public ResponseEntity<String> handlerProductNotFoundException(ProductoNotFoundException ex) {
@@ -33,9 +33,16 @@ public class GlobalHandlerException {
     public ResponseEntity<String> handlerVentaNotFoundException(VentaNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
-    
+
     @ExceptionHandler(ClienteNotFoundException.class)
-    public ResponseEntity<String> handlerClienteNotFoundException(ClienteNotFoundException ex){
+    public ResponseEntity<String> handlerClienteNotFoundException(ClienteNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(VentaByDateNotFoundException.class)
+    public ResponseEntity<String> handlerVentaByDateNotFoundException(VentaByDateNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+
 }
