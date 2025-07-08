@@ -4,7 +4,6 @@
  */
 package com.mycompany.bazar.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +23,7 @@ import lombok.Setter;
  * @author CharlyW
  */
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 public class Venta {
 
     @Id

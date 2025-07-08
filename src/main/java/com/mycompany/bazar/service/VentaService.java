@@ -4,10 +4,11 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.VentaFechaDTO;
+import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.exception.ClienteNotFoundException;
 import com.mycompany.bazar.exception.InsufficientStockException;
 import com.mycompany.bazar.exception.ProductoNotFoundException;
-import com.mycompany.bazar.exception.VentaByDateNotFoundException;
 import com.mycompany.bazar.exception.VentaNotFoundException;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Producto;
@@ -16,7 +17,6 @@ import com.mycompany.bazar.repository.IClienteRepository;
 import com.mycompany.bazar.repository.IProductoRepository;
 import com.mycompany.bazar.repository.IVentaRepository;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class VentaService implements IVentaService {
         // Reviso si el cliente existe.
         clienteRepo.findById(venta.getUnCliente().getIdCliente()).orElseThrow(
                 () -> new ClienteNotFoundException("El cliente con el id: " + venta.getUnCliente().getIdCliente() + " no existe."));
-        
+
         Double totalVenta = 0D;
         // Recorro la lista de items de la venta
         for (ItemVenta item : venta.getListaDeItems()) {
@@ -114,11 +114,11 @@ public class VentaService implements IVentaService {
     public Venta editVenta(Venta venta) {
         //Reviso si encuentro la venta
         Venta ventaEncontrada = this.findVenta(venta.getCodigoVenta());
-        
+
         // Reviso si el cliente existe.
         clienteRepo.findById(venta.getUnCliente().getIdCliente()).orElseThrow(
                 () -> new ClienteNotFoundException("El cliente con el id: " + venta.getUnCliente().getIdCliente() + " no existe."));
-        
+
         // Primero devolver los items que compro al encontrar la venta en bd
         for (ItemVenta item : ventaEncontrada.getListaDeItems()) {
             Producto productoDB = produRepo.findById(item.getProducto().getCodigoProducto()).orElseThrow(
@@ -166,22 +166,31 @@ public class VentaService implements IVentaService {
 
     @Override
     @Transactional
-    public List<String> findAllByfechaVentaMontoCantidad(LocalDate fecha) {
+    public VentaFechaDTO findAllByfechaVentaMontoCantidad(LocalDate fecha) {
         //Encuentro las ventas de tal dia
-        List<Venta> listaVentas = ventaRepo.findAllByfechaVenta(fecha);
-        if (listaVentas.isEmpty()) {
-            throw new VentaByDateNotFoundException("No se encuentran ventas con la fecha: " + fecha);
-        }
         Double montoTotalDia = 0D;
-        Integer cantidadVentas = 0;
-        for (Venta ven : listaVentas) {
-            montoTotalDia = montoTotalDia + ven.getTotal();
-            cantidadVentas++;
+        int cantidadVenta = 0;
+
+        List<Venta> listaVentas = ventaRepo.findAllByfechaVenta(fecha);
+
+        if (!listaVentas.isEmpty()) {
+            for (Venta ven : listaVentas) {
+                montoTotalDia = montoTotalDia + ven.getTotal();
+                cantidadVenta++;
+            }
         }
-        List<String> listaDeDatos = new ArrayList<>();
-        listaDeDatos.add(String.valueOf(montoTotalDia));
-        listaDeDatos.add(String.valueOf(cantidadVentas));
-        return listaDeDatos;
+        return new VentaFechaDTO(fecha, montoTotalDia, cantidadVenta);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public VentaUsuarioMayorVentaDTO getMayorVenta() {
+        Venta venta = ventaRepo.findFirstByOrderByTotalDesc();
+        if(venta == null){
+            throw new VentaNotFoundException("No se encuentran ventas registradas en el sistema.");
+        }
+        this.findVenta(venta.getCodigoVenta());
+        return new VentaUsuarioMayorVentaDTO(venta.getCodigoVenta(), venta.getUnCliente().getNombre(), venta.getUnCliente().getApellido(), venta.getListaDeItems().size(), venta.getTotal());
     }
 
 }

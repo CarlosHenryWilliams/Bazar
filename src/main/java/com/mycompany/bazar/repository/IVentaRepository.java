@@ -17,4 +17,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IVentaRepository extends JpaRepository<Venta, Long >{
     public List<Venta> findAllByfechaVenta(LocalDate fecha);
+    public Venta findFirstByOrderByTotalDesc();
 }

@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.VentaFechaDTO;
+import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import java.time.LocalDate;
@@ -34,6 +36,10 @@ public interface IVentaService {
     public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta);
 
     // Devuelve todas las ventas con la cantidad y la suma de tal fecha
-    public List<String> findAllByfechaVentaMontoCantidad(LocalDate fecha);
+    public VentaFechaDTO findAllByfechaVentaMontoCantidad(LocalDate fecha);
+    
+    // Devuelve la mayor venta hasta el momentot
+    public VentaUsuarioMayorVentaDTO getMayorVenta();
+    
 
 }

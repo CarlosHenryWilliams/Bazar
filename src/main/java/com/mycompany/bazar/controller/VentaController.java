@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.controller;
 
+import com.mycompany.bazar.dto.VentaFechaDTO;
+import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.service.IVentaService;
@@ -76,9 +78,15 @@ public class VentaController {
     // monto total y cantidad de ventas en un dia
     @GetMapping("/ventas/fecha/{fechaVenta}")
     public ResponseEntity<String> findAllByfechaVentaMontoCantidad(@PathVariable LocalDate fechaVenta) {
-        List<String> listaDeDatos = ventaServ.findAllByfechaVentaMontoCantidad(fechaVenta);
-        return new ResponseEntity<>("Fecha: " + fechaVenta + "\nMonto Total: " + listaDeDatos.get(0) + " \nCantidad de ventas: " + listaDeDatos.get(1),HttpStatus.OK);
+        VentaFechaDTO venDTO =  ventaServ.findAllByfechaVentaMontoCantidad(fechaVenta);
+        return new ResponseEntity<>("Fecha: " + venDTO.getFechaVenta() + "\nMonto Total: " + venDTO.getMontoTotal()+ " \nCantidad de ventas: " + venDTO.getCantidadVentas(),HttpStatus.OK);
     }
+    
+    @GetMapping("/ventas/mayor_venta")
+      public ResponseEntity<VentaUsuarioMayorVentaDTO>  getMayorVenta() {
+          VentaUsuarioMayorVentaDTO ventaDatos =  ventaServ.getMayorVenta();
+          return new ResponseEntity<>(ventaDatos, HttpStatus.OK);
+      }
     
 
 }
