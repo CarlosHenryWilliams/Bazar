@@ -6,6 +6,7 @@ package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.model.Cliente;
 import com.mycompany.bazar.service.IClienteService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class ClienteController {
 
     // alta
     @PostMapping("/clientes/crear")
-    public ResponseEntity<String> saveCliente(@RequestBody Cliente cli) {
+    public ResponseEntity<String> saveCliente(@RequestBody  @Valid Cliente cli) {
         clienteServ.saveCliente(cli);
         return new ResponseEntity<>("El cliente ha sido creado con exito.", HttpStatus.CREATED);
     }
@@ -58,7 +59,7 @@ public class ClienteController {
 
     // edicion
     @PutMapping("/clientes/editar")
-    public ResponseEntity<Cliente> editCliente(@RequestBody Cliente cli) {
+    public ResponseEntity<Cliente> editCliente(@RequestBody @Valid Cliente cli) {
         Cliente cliente = clienteServ.editCliente(cli);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }

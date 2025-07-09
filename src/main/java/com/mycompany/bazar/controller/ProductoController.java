@@ -6,6 +6,7 @@ package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.service.IProductoService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class ProductoController {
 
     // alta
     @PostMapping("/productos/crear")
-    public ResponseEntity<String> saveProducto(@RequestBody Producto produ) {
+    public ResponseEntity<String> saveProducto(@RequestBody @Valid Producto produ) {
         produServ.saveProducto(produ);
         return new ResponseEntity<>("El Producto ha sido creado con exito.", HttpStatus.CREATED);
     }
@@ -58,7 +59,7 @@ public class ProductoController {
 
     // edicion
     @PutMapping("/productos/editar")
-    public ResponseEntity<Producto> editProducto(@RequestBody Producto produ) {
+    public ResponseEntity<Producto> editProducto(@RequestBody @Valid Producto produ) {
         Producto productoAEditar = produServ.editProducto(produ);
         return new ResponseEntity<>(productoAEditar, HttpStatus.OK);
     }

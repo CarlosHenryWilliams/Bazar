@@ -9,6 +9,7 @@ import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.service.IVentaService;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class VentaController {
 
     // alta
     @PostMapping("/ventas/crear")
-    public ResponseEntity<String> saveVenta(@RequestBody Venta venta) {
+    public ResponseEntity<String> saveVenta(@RequestBody @Valid Venta venta) {
         ventaServ.saveVenta(venta);
         return new ResponseEntity<>("La venta se ha realizado correctamente.", HttpStatus.CREATED);
     }
@@ -63,7 +64,7 @@ public class VentaController {
 
     // edit 
     @PutMapping("/ventas/editar")
-    public ResponseEntity<Venta> editVenta(@RequestBody Venta venta) {
+    public ResponseEntity<Venta> editVenta(@RequestBody @Valid Venta venta) {
         Venta ventaEditada = ventaServ.editVenta(venta);
         return new ResponseEntity<>(ventaEditada, HttpStatus.OK);
     }
