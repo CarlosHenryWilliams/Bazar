@@ -37,8 +37,9 @@ public class ClienteService implements IClienteService {
 
     @Override
     @Transactional
-    public void saveCliente(Cliente cli) {
-        clienteRepo.save(cli);
+    public Cliente saveCliente(Cliente cli) {
+        Cliente  clienteGuardado = clienteRepo.save(cli);
+        return clienteGuardado;
     }
 
     @Override

@@ -35,7 +35,6 @@ public class Producto {
     @Positive(message = "El costo debe ser un valor positivo")
     private Double costo;
     @NotNull
-    @Positive(message = "La cantidad debe ser un valor positivo")
     private Double cantidadDisponible;
 
 }

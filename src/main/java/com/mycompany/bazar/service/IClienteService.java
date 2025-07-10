@@ -20,7 +20,7 @@ public interface IClienteService {
     public Cliente findCliente(Long id);
 
     // alta
-    public void saveCliente(Cliente cli);
+    public Cliente saveCliente(Cliente cli);
 
     // baja
     public void deleteCliente(Long id);

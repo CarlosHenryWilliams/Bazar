@@ -12,7 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class Venta {
     @NotNull
     private LocalDate fechaVenta;
     private Double total;
+    @NotEmpty
+    @Valid
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL) //  El cascade all hace que afecte tambien a los ItemVenta
     private List<ItemVenta> listaDeItems = new ArrayList<>(); // siempre va a tener una lista asi que esta bien inicializarla.
 

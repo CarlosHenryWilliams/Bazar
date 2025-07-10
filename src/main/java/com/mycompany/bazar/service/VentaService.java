@@ -10,6 +10,7 @@ import com.mycompany.bazar.exception.ClienteNotFoundException;
 import com.mycompany.bazar.exception.InsufficientStockException;
 import com.mycompany.bazar.exception.ProductoNotFoundException;
 import com.mycompany.bazar.exception.VentaNotFoundException;
+import com.mycompany.bazar.model.Cliente;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.model.Venta;
@@ -51,12 +52,12 @@ public class VentaService implements IVentaService {
 
     @Override
     @Transactional
-    public void saveVenta(Venta venta) {
+    public Venta saveVenta(Venta venta) {
 
         // Reviso si el cliente existe.
-        clienteRepo.findById(venta.getUnCliente().getIdCliente()).orElseThrow(
+        Cliente clienteAsociado = clienteRepo.findById(venta.getUnCliente().getIdCliente()).orElseThrow(
                 () -> new ClienteNotFoundException("El cliente con el id: " + venta.getUnCliente().getIdCliente() + " no existe."));
-
+        venta.setUnCliente(clienteAsociado); // ASOCIAR CLIENTE A LA VENTA
         Double totalVenta = 0D;
         // Recorro la lista de items de la venta
         for (ItemVenta item : venta.getListaDeItems()) {
@@ -84,11 +85,14 @@ public class VentaService implements IVentaService {
             produRepo.save(productoBD); // edito el producto
             // Calculo el costo total
             totalVenta = totalVenta + productoBD.getCosto() * item.getCantidad();
+            item.setProducto(productoBD); // ASOCIO EL PRODUCTO AL ITEM
             item.setVenta(venta); // Vinculo la venta al item que se vendio
         }
 
         venta.setTotal(totalVenta);
-        ventaRepo.save(venta);
+       
+        Venta ventaGuardada =  ventaRepo.save(venta);
+        return ventaGuardada;
     }
 
     @Override
@@ -186,7 +190,7 @@ public class VentaService implements IVentaService {
     @Transactional(readOnly = true)
     public VentaUsuarioMayorVentaDTO getMayorVenta() {
         Venta venta = ventaRepo.findFirstByOrderByTotalDesc();
-        if(venta == null){
+        if (venta == null) {
             throw new VentaNotFoundException("No se encuentran ventas registradas en el sistema.");
         }
         this.findVenta(venta.getCodigoVenta());

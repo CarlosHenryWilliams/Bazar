@@ -49,9 +49,9 @@ public class VentaController {
 
     // alta
     @PostMapping("/ventas/crear")
-    public ResponseEntity<String> saveVenta(@RequestBody @Valid Venta venta) {
-        ventaServ.saveVenta(venta);
-        return new ResponseEntity<>("La venta se ha realizado correctamente.", HttpStatus.CREATED);
+    public ResponseEntity<Venta> saveVenta(@RequestBody @Valid Venta venta) {
+        Venta ventaCreada = ventaServ.saveVenta(venta);
+        return new ResponseEntity<>( ventaCreada,HttpStatus.CREATED);
     }
 
     /// Revisar las 2 de abajo

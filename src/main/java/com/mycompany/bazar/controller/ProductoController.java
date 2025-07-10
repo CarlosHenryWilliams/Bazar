@@ -45,9 +45,9 @@ public class ProductoController {
 
     // alta
     @PostMapping("/productos/crear")
-    public ResponseEntity<String> saveProducto(@RequestBody @Valid Producto produ) {
-        produServ.saveProducto(produ);
-        return new ResponseEntity<>("El Producto ha sido creado con exito.", HttpStatus.CREATED);
+    public ResponseEntity<Producto> saveProducto(@RequestBody @Valid Producto produ) {
+        Producto productoCreado = produServ.saveProducto(produ);
+        return new ResponseEntity<>(productoCreado, HttpStatus.CREATED);
     }
 
     // baja

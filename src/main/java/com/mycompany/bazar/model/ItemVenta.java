@@ -11,6 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,15 +21,17 @@ import lombok.Setter;
  * @author CharlyW
  */
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 public class ItemVenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idItemVenta;
+    @NotNull
+    @Positive(message = "La cantidad debe ser un valor positivo")
     private int cantidad;
 
-    
     @ManyToOne
     @JoinColumn(name = "idVenta")
     @JsonIgnore

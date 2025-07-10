@@ -24,7 +24,7 @@ public interface IVentaService {
     public Venta findVenta(Long id);
 
     // alta
-    public void saveVenta(Venta venta);
+    public Venta saveVenta(Venta venta);
 
     // baja
     public void deleteVenta(Long id);

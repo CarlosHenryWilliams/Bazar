@@ -20,7 +20,7 @@ public interface IProductoService {
     public Producto findProducto(Long id);
 
     // alta
-    public void saveProducto(Producto produ);
+    public Producto saveProducto(Producto produ);
 
     // baja
     public void deleteProducto(Long id);
