@@ -25,7 +25,7 @@ public class GlobalHandlerException {
     // Validacion producto foreign key
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handlerDataIntegrityViolationException(DataIntegrityViolationException ex){
-        return new ResponseEntity<>("No se puede eliminar ya que esta asociado con una venta existente." , HttpStatus.CONFLICT);
+        return new ResponseEntity<>("No se puede eliminar/crear porque ya esta en uso." , HttpStatus.CONFLICT);
     }
     
     

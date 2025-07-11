@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.ProductoRequestDTO;
+import com.mycompany.bazar.dto.ProductoResponseDTO;
 import com.mycompany.bazar.model.Producto;
 import java.util.List;
 
@@ -14,21 +16,21 @@ import java.util.List;
 public interface IProductoService {
 
     // lectura
-    public List<Producto> getProductos();
+    public List<ProductoResponseDTO> getProductos();
 
     // lectura de un solo objeto
-    public Producto findProducto(Long id);
+    public ProductoResponseDTO findProducto(Long id);
 
     // alta
-    public Producto saveProducto(Producto produ);
+    public ProductoResponseDTO saveProducto(ProductoRequestDTO produRequestDTO);
 
     // baja
     public void deleteProducto(Long id);
 
     // edicion
-    public Producto editProducto(Producto produ);
+    public ProductoResponseDTO editProducto(Long id, ProductoRequestDTO produRequestDTO);
     
     // Traer productos con falta de sstock
-    public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad);
+    public List<ProductoResponseDTO> findBycantidadDisponibleLessThan(Integer cantidad);
     
 }

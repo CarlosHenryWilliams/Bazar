@@ -4,9 +4,12 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.ProductoRequestDTO;
+import com.mycompany.bazar.dto.ProductoResponseDTO;
 import com.mycompany.bazar.exception.ProductoNotFoundException;
 import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.repository.IProductoRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,47 +27,64 @@ public class ProductoService implements IProductoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Producto> getProductos() {
-        return produRepo.findAll();
+    public List<ProductoResponseDTO> getProductos() {
+      
+        List<Producto> listaProductos =  produRepo.findAll();
+        List<ProductoResponseDTO> listaProduResponseDTO = new ArrayList<>();
+        for (Producto produ : listaProductos) {
+            listaProduResponseDTO.add(new ProductoResponseDTO(produ.getCodigoProducto(), produ.getNombre(), produ.getMarca(), produ.getCosto(), produ.getCantidadDisponible()));
+        }
+        return listaProduResponseDTO;
+
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Producto findProducto(Long id) {
+    public ProductoResponseDTO findProducto(Long id) {
         Producto produ = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
-        return produ;
+        ProductoResponseDTO produResponseDTO = new ProductoResponseDTO(produ.getCodigoProducto(), produ.getNombre(), produ.getMarca(), produ.getCosto(), produ.getCantidadDisponible());
+        return produResponseDTO;
     }
 
     @Override
     @Transactional
-    public Producto saveProducto(Producto produ) {
-        Producto productoGuardado = produRepo.save(produ);
-        return productoGuardado;
+    public ProductoResponseDTO saveProducto(ProductoRequestDTO produRequestDTO) {
+        Producto productoAGuardar = new Producto(produRequestDTO.getNombre(), produRequestDTO.getMarca(), produRequestDTO.getCosto(), produRequestDTO.getCantidadDisponible());
+        productoAGuardar = produRepo.save(productoAGuardar);
+        ProductoResponseDTO produResponseDTO = new ProductoResponseDTO(productoAGuardar.getCodigoProducto(), productoAGuardar.getNombre(), productoAGuardar.getMarca(), productoAGuardar.getCosto(), productoAGuardar.getCantidadDisponible());
+        return produResponseDTO;
     }
 
     @Override
     @Transactional
     public void deleteProducto(Long id) {
-        Producto produ = this.findProducto(id);
+        Producto produ = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
         produRepo.deleteById(produ.getCodigoProducto());
     }
 
     @Override
     @Transactional
-    public Producto editProducto(Producto produ) {
-        Producto producto = this.findProducto(produ.getCodigoProducto());
-        producto.setNombre(produ.getNombre());
-        producto.setMarca(produ.getMarca());
-        producto.setCosto(produ.getCosto());
-        producto.setCantidadDisponible(produ.getCantidadDisponible());
-        this.saveProducto(producto);
-        return producto;
+    public ProductoResponseDTO editProducto(Long id, ProductoRequestDTO produRequestDTO) {
+        Producto producto = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
+
+        producto.setNombre(produRequestDTO.getNombre());
+        producto.setMarca(produRequestDTO.getMarca());
+        producto.setCosto(produRequestDTO.getCosto());
+        producto.setCantidadDisponible(produRequestDTO.getCantidadDisponible());
+        producto = produRepo.save(producto);
+        ProductoResponseDTO produResponseDTO = new ProductoResponseDTO(producto.getCodigoProducto(), producto.getNombre(), producto.getMarca(), producto.getCosto(), producto.getCantidadDisponible());
+        return produResponseDTO;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Producto> findBycantidadDisponibleLessThan(Integer cantidad) {
-        return produRepo.findBycantidadDisponibleLessThan(cantidad);
+    public List<ProductoResponseDTO> findBycantidadDisponibleLessThan(Integer cantidad) {
+        List<Producto> listaProductos = produRepo.findBycantidadDisponibleLessThan(cantidad);
+        List<ProductoResponseDTO> listaProduResponseDTO = new ArrayList<>();
+        for (Producto produ : listaProductos) {
+            listaProduResponseDTO.add(new ProductoResponseDTO(produ.getCodigoProducto(), produ.getNombre(), produ.getMarca(), produ.getCosto(), produ.getCantidadDisponible()));
+        }
+        return listaProduResponseDTO;
     }
 
 }

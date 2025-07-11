@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.controller;
 
+import com.mycompany.bazar.dto.ProductoRequestDTO;
+import com.mycompany.bazar.dto.ProductoResponseDTO;
 import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.service.IProductoService;
 import jakarta.validation.Valid;
@@ -31,23 +33,23 @@ public class ProductoController {
 
     // lectura
     @GetMapping("/productos")
-    public ResponseEntity<List<Producto>> getProductos() {
-        List<Producto> listaProductos = produServ.getProductos();
-        return new ResponseEntity<>(listaProductos, HttpStatus.OK);
+    public ResponseEntity<List<ProductoResponseDTO>> getProductos() {
+        List<ProductoResponseDTO> listaProduResponseDTO= produServ.getProductos();
+        return new ResponseEntity<>(listaProduResponseDTO, HttpStatus.OK);
     }
 
     // lectura de un solo objeto
     @GetMapping("/productos/{id}")
-    public ResponseEntity<Producto> findProducto(@PathVariable Long id) {
-        Producto produ = produServ.findProducto(id);
-        return new ResponseEntity<>(produ, HttpStatus.OK);
+    public ResponseEntity<ProductoResponseDTO> findProducto(@PathVariable Long id) {
+        ProductoResponseDTO produResponseDTO = produServ.findProducto(id);
+        return new ResponseEntity<>(produResponseDTO, HttpStatus.OK);
     }
 
     // alta
     @PostMapping("/productos/crear")
-    public ResponseEntity<Producto> saveProducto(@RequestBody @Valid Producto produ) {
-        Producto productoCreado = produServ.saveProducto(produ);
-        return new ResponseEntity<>(productoCreado, HttpStatus.CREATED);
+    public ResponseEntity<ProductoResponseDTO> saveProducto(@RequestBody @Valid ProductoRequestDTO produRequestDTO) {
+        ProductoResponseDTO produResponseDTO = produServ.saveProducto(produRequestDTO);
+        return new ResponseEntity<>(produResponseDTO, HttpStatus.CREATED);
     }
 
     // baja
@@ -58,14 +60,14 @@ public class ProductoController {
     }
 
     // edicion
-    @PutMapping("/productos/editar")
-    public ResponseEntity<Producto> editProducto(@RequestBody @Valid Producto produ) {
-        Producto productoAEditar = produServ.editProducto(produ);
-        return new ResponseEntity<>(productoAEditar, HttpStatus.OK);
+    @PutMapping("/productos/editar/{id}")
+    public ResponseEntity<ProductoResponseDTO> editProducto(@PathVariable Long id, @RequestBody @Valid ProductoRequestDTO produRequestDTO) {
+        ProductoResponseDTO produResponseDTO = produServ.editProducto(id,produRequestDTO);
+        return new ResponseEntity<>(produResponseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/productos/falta_stock")
-    public ResponseEntity<List<Producto>> findBycantidadDisponibleLessThan() {
+    public ResponseEntity<List<ProductoResponseDTO>> findBycantidadDisponibleLessThan() {
         return new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
     }
 }

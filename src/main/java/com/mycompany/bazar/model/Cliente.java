@@ -5,6 +5,7 @@
 package com.mycompany.bazar.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +31,7 @@ public class Cliente {
     @NotBlank
     private String apellido;
     @NotBlank
+    @Column(unique = true)
     private String dni;
 
     public Cliente() {
