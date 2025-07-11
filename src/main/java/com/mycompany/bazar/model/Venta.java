@@ -45,4 +45,14 @@ public class Venta {
     @JoinColumn(name = "idCliente")
     private Cliente unCliente;
 
+    public Venta() {
+    }
+
+    public Venta(Long codigoVenta, LocalDate fechaVenta, Double total, Cliente unCliente) {
+        this.codigoVenta = codigoVenta;
+        this.fechaVenta = fechaVenta;
+        this.total = total;
+        this.unCliente = unCliente;
+    }
+
 }

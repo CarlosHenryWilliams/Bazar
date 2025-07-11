@@ -41,4 +41,14 @@ public class ItemVenta {
     @JoinColumn(name = "idProducto")
     private Producto producto;
 
+    public ItemVenta() {
+
+    }
+
+    public ItemVenta(long idItemVenta, int cantidad, Venta venta, Producto producto) {
+        this.idItemVenta = idItemVenta;
+        this.cantidad = cantidad;
+        this.venta = venta;
+        this.producto = producto;
+    }
 }

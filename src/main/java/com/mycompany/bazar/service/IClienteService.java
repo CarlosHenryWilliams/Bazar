@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.ClienteRequestDTO;
+import com.mycompany.bazar.dto.ClienteResponseDTO;
 import com.mycompany.bazar.model.Cliente;
 import java.util.List;
 
@@ -14,18 +16,18 @@ import java.util.List;
 public interface IClienteService {
 
     // lectura
-    public List<Cliente> getClientes();
+    public List<ClienteResponseDTO> getClientes();
 
     // lectura de un solo objeto
-    public Cliente findCliente(Long id);
+    public ClienteResponseDTO findCliente(Long id);
 
     // alta
-    public Cliente saveCliente(Cliente cli);
+    public ClienteResponseDTO saveCliente(ClienteRequestDTO cli);
 
     // baja
     public void deleteCliente(Long id);
 
     // edicion
-    public Cliente editCliente(Cliente cli);
+    public ClienteResponseDTO editCliente(Long id, ClienteRequestDTO cliRequestDTO);
 
 }

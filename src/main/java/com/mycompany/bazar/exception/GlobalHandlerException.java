@@ -6,6 +6,7 @@ package com.mycompany.bazar.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,6 +22,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalHandlerException {
 
+    // Validacion producto foreign key
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handlerDataIntegrityViolationException(DataIntegrityViolationException ex){
+        return new ResponseEntity<>("No se puede eliminar ya que esta asociado con una venta existente." , HttpStatus.CONFLICT);
+    }
+    
+    
     //Validacion de campos JSON PARSE
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handlerHttpMessageNotReadableException(HttpMessageNotReadableException ex) {

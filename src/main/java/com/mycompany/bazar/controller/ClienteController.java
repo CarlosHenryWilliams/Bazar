@@ -4,6 +4,8 @@
  */
 package com.mycompany.bazar.controller;
 
+import com.mycompany.bazar.dto.ClienteRequestDTO;
+import com.mycompany.bazar.dto.ClienteResponseDTO;
 import com.mycompany.bazar.model.Cliente;
 import com.mycompany.bazar.service.IClienteService;
 import jakarta.validation.Valid;
@@ -31,23 +33,23 @@ public class ClienteController {
 
     // lectura 
     @GetMapping("/clientes")
-    public ResponseEntity<List<Cliente>> getClientes() {
-        List<Cliente> listaClientes = clienteServ.getClientes();
-        return new ResponseEntity<>(listaClientes, HttpStatus.OK);
+    public ResponseEntity<List<ClienteResponseDTO>> getClientes() {
+        List<ClienteResponseDTO> listaCliResponseDTO = clienteServ.getClientes();
+        return new ResponseEntity<>(listaCliResponseDTO, HttpStatus.OK);
     }
 
     // lectura de un solo objeto
     @GetMapping("/clientes/{id}")
-    public ResponseEntity<Cliente> findCliente(@PathVariable Long id) {
-        Cliente cliente = clienteServ.findCliente(id);
-        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    public ResponseEntity<ClienteResponseDTO> findCliente(@PathVariable Long id) {
+        ClienteResponseDTO cliResponseDTO = clienteServ.findCliente(id);
+        return new ResponseEntity<>(cliResponseDTO, HttpStatus.OK);
     }
 
     // alta
     @PostMapping("/clientes/crear")
-    public ResponseEntity<Cliente> saveCliente(@RequestBody @Valid Cliente cli) {
-        Cliente clienteCreado = clienteServ.saveCliente(cli);
-        return new ResponseEntity<>(clienteCreado, HttpStatus.CREATED);
+    public ResponseEntity<ClienteResponseDTO> saveCliente(@RequestBody @Valid ClienteRequestDTO cliRequestDTO) {
+        ClienteResponseDTO cliResponseDTO = clienteServ.saveCliente(cliRequestDTO);
+        return new ResponseEntity<>(cliResponseDTO, HttpStatus.CREATED);
     }
 
     // baja
@@ -58,9 +60,9 @@ public class ClienteController {
     }
 
     // edicion
-    @PutMapping("/clientes/editar")
-    public ResponseEntity<Cliente> editCliente(@RequestBody @Valid Cliente cli) {
-        Cliente cliente = clienteServ.editCliente(cli);
-        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    @PutMapping("/clientes/editar/{id}")
+    public ResponseEntity<ClienteResponseDTO> editCliente(@PathVariable Long id, @RequestBody @Valid ClienteRequestDTO cliRequestDTO) {
+        ClienteResponseDTO cliResponseDTO = clienteServ.editCliente(id, cliRequestDTO);
+        return new ResponseEntity<>(cliResponseDTO, HttpStatus.OK);
     }
 }

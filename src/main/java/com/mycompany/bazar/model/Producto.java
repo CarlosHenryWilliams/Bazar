@@ -4,6 +4,7 @@
  */
 package com.mycompany.bazar.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,8 @@ public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID del producto, generado automaticamente por el sistema.", accessMode = Schema.AccessMode.READ_ONLY)
+
     private Long codigoProducto;
     @NotBlank
     private String nombre;
@@ -36,5 +39,18 @@ public class Producto {
     private Double costo;
     @NotNull
     private Double cantidadDisponible;
+
+    public Producto() {
+    }
+
+    public Producto(Long codigoProducto, String nombre, String marca, Double costo, Double cantidadDisponible) {
+        this.codigoProducto = codigoProducto;
+        this.nombre = nombre;
+        this.marca = marca;
+        this.costo = costo;
+        this.cantidadDisponible = cantidadDisponible;
+    }
+    
+    
 
 }

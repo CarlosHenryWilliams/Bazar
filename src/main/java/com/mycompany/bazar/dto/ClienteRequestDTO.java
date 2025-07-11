@@ -2,13 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.bazar.model;
+package com.mycompany.bazar.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,14 +12,9 @@ import lombok.Setter;
  *
  * @author CharlyW
  */
-@Entity
-@Getter
-@Setter
-public class Cliente {
+@Getter @Setter
+public class ClienteRequestDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCliente;
     @NotBlank
     private String nombre;
     @NotBlank
@@ -32,14 +22,13 @@ public class Cliente {
     @NotBlank
     private String dni;
 
-    public Cliente() {
+    public ClienteRequestDTO() {
     }
-    
 
-    public Cliente(String nombre, String apellido, String dni) {
+    public ClienteRequestDTO(String nombre, String apellido, String dni) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
     }
-
+    
 }
