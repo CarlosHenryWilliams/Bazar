@@ -45,8 +45,7 @@ public class ItemVenta {
 
     }
 
-    public ItemVenta(long idItemVenta, int cantidad, Venta venta, Producto producto) {
-        this.idItemVenta = idItemVenta;
+    public ItemVenta(int cantidad, Venta venta, Producto producto) {
         this.cantidad = cantidad;
         this.venta = venta;
         this.producto = producto;

@@ -5,6 +5,8 @@
 package com.mycompany.bazar.service;
 
 import com.mycompany.bazar.dto.VentaFechaDTO;
+import com.mycompany.bazar.dto.VentaRequestDTO;
+import com.mycompany.bazar.dto.VentaResponseDTO;
 import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
@@ -24,7 +26,7 @@ public interface IVentaService {
     public Venta findVenta(Long id);
 
     // alta
-    public Venta saveVenta(Venta venta);
+    public VentaResponseDTO saveVenta(VentaRequestDTO ventaRequestDTO);
 
     // baja
     public void deleteVenta(Long id);

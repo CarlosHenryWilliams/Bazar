@@ -5,6 +5,8 @@
 package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.dto.VentaFechaDTO;
+import com.mycompany.bazar.dto.VentaRequestDTO;
+import com.mycompany.bazar.dto.VentaResponseDTO;
 import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
 import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
@@ -49,9 +51,9 @@ public class VentaController {
 
     // alta
     @PostMapping("/ventas/crear")
-    public ResponseEntity<Venta> saveVenta(@RequestBody @Valid Venta venta) {
-        Venta ventaCreada = ventaServ.saveVenta(venta);
-        return new ResponseEntity<>( ventaCreada,HttpStatus.CREATED);
+    public ResponseEntity<VentaResponseDTO> saveVenta(@RequestBody @Valid VentaRequestDTO ventaRequestDTO) {
+        VentaResponseDTO ventaResponseDTO = ventaServ.saveVenta(ventaRequestDTO);
+        return new ResponseEntity<>( ventaResponseDTO,HttpStatus.CREATED);
     }
 
     /// Revisar las 2 de abajo

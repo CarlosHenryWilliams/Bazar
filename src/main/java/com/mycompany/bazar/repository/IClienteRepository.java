@@ -5,6 +5,7 @@
 package com.mycompany.bazar.repository;
 
 import com.mycompany.bazar.model.Cliente;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IClienteRepository extends JpaRepository<Cliente, Long> {
-    
+    public Optional<Cliente> findClienteBydni(String dni); // usar optional para tratar el orElseThrow
 }
