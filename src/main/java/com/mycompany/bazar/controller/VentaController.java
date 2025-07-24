@@ -4,6 +4,7 @@
  */
 package com.mycompany.bazar.controller;
 
+import com.mycompany.bazar.dto.ItemVentaResponseDTO;
 import com.mycompany.bazar.dto.VentaFechaDTO;
 import com.mycompany.bazar.dto.VentaRequestDTO;
 import com.mycompany.bazar.dto.VentaResponseDTO;
@@ -37,16 +38,16 @@ public class VentaController {
 
     // lectura
     @GetMapping("/ventas")
-    public ResponseEntity<List<Venta>> getVentas() {
-        List<Venta> listaVentas = ventaServ.getVentas();
-        return new ResponseEntity<>(listaVentas, HttpStatus.OK);
+    public ResponseEntity<List<VentaResponseDTO>> getVentas() {
+        List<VentaResponseDTO> listaVentaResponseDTO = ventaServ.getVentas();
+        return new ResponseEntity<>(listaVentaResponseDTO, HttpStatus.OK);
     }
 
     // lectura de un solo objeto
     @GetMapping("/ventas/{id}")
-    public ResponseEntity<Venta> findVenta(@PathVariable Long id) {
-        Venta ventaEncontrada = ventaServ.findVenta(id);
-        return new ResponseEntity<>(ventaEncontrada, HttpStatus.OK);
+    public ResponseEntity<VentaResponseDTO> findVenta(@PathVariable Long id) {
+        VentaResponseDTO ventaResponseDTO = ventaServ.findVenta(id);
+        return new ResponseEntity<>(ventaResponseDTO, HttpStatus.OK);
     }
 
     // alta
@@ -73,8 +74,8 @@ public class VentaController {
 
     // productos de una venta en especifico
     @GetMapping("/ventas/productos/{codigoVenta}")
-    public ResponseEntity<List<ItemVenta>> findlistaDeItemsByCodigoVenta(@PathVariable Long codigoVenta) {
-        List<ItemVenta> listaItems = ventaServ.findlistaDeItemsByCodigoVenta(codigoVenta);
+    public ResponseEntity<List<ItemVentaResponseDTO>> findlistaDeItemsByCodigoVenta(@PathVariable Long codigoVenta) {
+        List<ItemVentaResponseDTO> listaItems = ventaServ.findlistaDeItemsByCodigoVenta(codigoVenta);
         return new ResponseEntity<>(listaItems, HttpStatus.OK);
     }
     

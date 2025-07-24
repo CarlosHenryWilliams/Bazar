@@ -4,11 +4,11 @@
  */
 package com.mycompany.bazar.service;
 
+import com.mycompany.bazar.dto.ItemVentaResponseDTO;
 import com.mycompany.bazar.dto.VentaFechaDTO;
 import com.mycompany.bazar.dto.VentaRequestDTO;
 import com.mycompany.bazar.dto.VentaResponseDTO;
 import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
-import com.mycompany.bazar.model.ItemVenta;
 import com.mycompany.bazar.model.Venta;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.List;
 public interface IVentaService {
 
     // lectura
-    public List<Venta> getVentas();
+    public List<VentaResponseDTO> getVentas();
 
     // lectura de un solo objeto
-    public Venta findVenta(Long id);
+    public VentaResponseDTO findVenta(Long id);
 
     // alta
     public VentaResponseDTO saveVenta(VentaRequestDTO ventaRequestDTO);
@@ -35,7 +35,7 @@ public interface IVentaService {
     public Venta editVenta(Venta venta);
 
     // Devuelve los productos de una venta 
-    public List<ItemVenta> findlistaDeItemsByCodigoVenta(Long codigoVenta);
+    public List<ItemVentaResponseDTO> findlistaDeItemsByCodigoVenta(Long codigoVenta);
 
     // Devuelve todas las ventas con la cantidad y la suma de tal fecha
     public VentaFechaDTO findAllByfechaVentaMontoCantidad(LocalDate fecha);
