@@ -9,8 +9,6 @@ import com.mycompany.bazar.dto.VentaFechaDTO;
 import com.mycompany.bazar.dto.VentaRequestDTO;
 import com.mycompany.bazar.dto.VentaResponseDTO;
 import com.mycompany.bazar.dto.VentaUsuarioMayorVentaDTO;
-import com.mycompany.bazar.model.ItemVenta;
-import com.mycompany.bazar.model.Venta;
 import com.mycompany.bazar.service.IVentaService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -57,7 +55,6 @@ public class VentaController {
         return new ResponseEntity<>( ventaResponseDTO,HttpStatus.CREATED);
     }
 
-    /// Revisar las 2 de abajo
     // baja
     @DeleteMapping("/ventas/eliminar/{id}")
     public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
@@ -66,10 +63,10 @@ public class VentaController {
     }
 
     // edit 
-    @PutMapping("/ventas/editar")
-    public ResponseEntity<Venta> editVenta(@RequestBody @Valid Venta venta) {
-        Venta ventaEditada = ventaServ.editVenta(venta);
-        return new ResponseEntity<>(ventaEditada, HttpStatus.OK);
+    @PutMapping("/ventas/editar/{id}")
+    public ResponseEntity<VentaResponseDTO> editVenta(@PathVariable Long id, @RequestBody @Valid VentaRequestDTO ventaRequestDTO) {
+        VentaResponseDTO ventaResponseDTO = ventaServ.editVenta(id, ventaRequestDTO);
+        return new ResponseEntity<>(ventaResponseDTO, HttpStatus.OK);
     }
 
     // productos de una venta en especifico

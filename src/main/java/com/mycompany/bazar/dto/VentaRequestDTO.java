@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ public class VentaRequestDTO {
 
     @NotNull
     private LocalDate fechaVenta;
+    
     @NotEmpty
     @Valid
     private List<ItemVentaRequestDTO> listaDeItemsDTO = new ArrayList<>();

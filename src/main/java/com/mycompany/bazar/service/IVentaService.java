@@ -32,7 +32,7 @@ public interface IVentaService {
     public void deleteVenta(Long id);
 
     // edicion
-    public Venta editVenta(Venta venta);
+    public VentaResponseDTO editVenta(Long id, VentaRequestDTO ventaDTO);
 
     // Devuelve los productos de una venta 
     public List<ItemVentaResponseDTO> findlistaDeItemsByCodigoVenta(Long codigoVenta);

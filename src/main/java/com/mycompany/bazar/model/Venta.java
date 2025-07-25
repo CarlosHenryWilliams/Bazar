@@ -38,7 +38,7 @@ public class Venta {
     private Double total;
     @NotEmpty
     @Valid
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL) //  El cascade all hace que afecte tambien a los ItemVenta
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true ) //  El cascade all hace que afecte tambien a los ItemVenta y el orphhanRemoval true hace que los items si se eliminan de la lista, ocurra lo mismo en la BD,
     private List<ItemVenta> listaDeItems = new ArrayList<>(); // siempre va a tener una lista asi que esta bien inicializarla.
 
     @ManyToOne

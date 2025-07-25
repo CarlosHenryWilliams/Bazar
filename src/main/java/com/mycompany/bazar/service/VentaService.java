@@ -70,12 +70,12 @@ public class VentaService implements IVentaService {
         // Creo los DTO's para la Venta.
         ClienteResponseDTOParaVenta cliResDTO = new ClienteResponseDTOParaVenta(ven.getUnCliente().getNombre(), ven.getUnCliente().getApellido(), ven.getUnCliente().getDni());
         List<ItemVentaResponseDTO> listaItemsResponseDTO = new ArrayList<>();
-        for(ItemVenta item : ven.getListaDeItems()){
+        for (ItemVenta item : ven.getListaDeItems()) {
             ProductoVentaResponseDTOParaVenta produVenResDTO = new ProductoVentaResponseDTOParaVenta(item.getProducto().getCodigoProducto(), item.getProducto().getNombre(), item.getProducto().getMarca(), item.getProducto().getCosto());
-            ItemVentaResponseDTO itemVenResDTO = new ItemVentaResponseDTO(item.getIdItemVenta(),item.getCantidad(), produVenResDTO);
+            ItemVentaResponseDTO itemVenResDTO = new ItemVentaResponseDTO(item.getIdItemVenta(), item.getCantidad(), produVenResDTO);
             listaItemsResponseDTO.add(itemVenResDTO);
         }
-        VentaResponseDTO  venResDTO = new VentaResponseDTO(ven.getCodigoVenta(), ven.getTotal(), ven.getFechaVenta(), listaItemsResponseDTO, cliResDTO);
+        VentaResponseDTO venResDTO = new VentaResponseDTO(ven.getCodigoVenta(), ven.getTotal(), ven.getFechaVenta(), listaItemsResponseDTO, cliResDTO);
         return venResDTO;
     }
 
@@ -166,13 +166,12 @@ public class VentaService implements IVentaService {
 
     @Override
     @Transactional
-    public Venta editVenta(Venta venta) {
+    public VentaResponseDTO editVenta(Long id, VentaRequestDTO ventaRequestDTO) {
         //Reviso si encuentro la venta
-        Venta ventaEncontrada = ventaRepo.findById(venta.getCodigoVenta()).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + venta.getCodigoVenta() + " no existe."));
+        Venta ventaEncontrada = ventaRepo.findById(id).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + id + " no existe."));
 
         // Reviso si el cliente existe.
-        clienteRepo.findById(venta.getUnCliente().getIdCliente()).orElseThrow(
-                () -> new ClienteNotFoundException("El cliente con el id: " + venta.getUnCliente().getIdCliente() + " no existe."));
+        Cliente clienteEncontrado = clienteRepo.findClienteBydni(ventaRequestDTO.getDniCliente()).orElseThrow(() -> new ClienteNotFoundException("El cliente con el DNI: " + ventaRequestDTO.getDniCliente() + "no existe."));
 
         // Primero devolver los items que compro al encontrar la venta en bd
         for (ItemVenta item : ventaEncontrada.getListaDeItems()) {
@@ -180,34 +179,62 @@ public class VentaService implements IVentaService {
                     () -> new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe."));
             productoDB.setCantidadDisponible(productoDB.getCantidadDisponible() + item.getCantidad());
         }
-
+        
+        // Limpiamos la lista de Items que ya tenia por defecto.
+        ventaEncontrada.getListaDeItems().clear();  // Esto los remueve tambien automaticamente de la BD por el orphanRemoval = true en la clase Venta
         Double costoTotal = 0D;
 
+        
+        
+        
+        
+        
+        
+        
         // Comprobar que los items de la venta que llega tengan stock
-        for (ItemVenta item : venta.getListaDeItems()) {
-            Producto productoBD = produRepo.findById(item.getProducto().getCodigoProducto()).orElseThrow(
-                    () -> new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe."));
+        // y Agregar a la lista de Items de la Venta original a persistir.
+        List<ItemVentaResponseDTO> listaDeItemsResponseDTO = new ArrayList<>(); // Lista de ItemsResponse a devolver
 
-            if (productoBD.getCantidadDisponible() >= item.getCantidad()) {  // si hay stock
-                productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() - item.getCantidad()); // resto el stock
+        for (ItemVentaRequestDTO itemVenRequestDTO : ventaRequestDTO.getListaDeItemsDTO()) {
+
+            Producto productoBD = produRepo.findById(itemVenRequestDTO.getIdProducto()).orElseThrow(
+                    () -> new ProductoNotFoundException("El producto con el id: " + itemVenRequestDTO.getIdProducto() + " no existe."));
+
+            if (productoBD.getCantidadDisponible() >= itemVenRequestDTO.getCantidad()) {  // si hay stock
+                productoBD.setCantidadDisponible(productoBD.getCantidadDisponible() - itemVenRequestDTO.getCantidad()); // resto el stock
                 produRepo.save(productoBD);  // actualizo el producto
-                costoTotal = costoTotal + (productoBD.getCosto() * item.getCantidad());
+                costoTotal = costoTotal + (productoBD.getCosto() * itemVenRequestDTO.getCantidad());
+
+                // Agrego el itemVenta nuevo a la venta original diferenciando los DTO
+                ItemVenta itemVenta = new ItemVenta(itemVenRequestDTO.getCantidad(), ventaEncontrada, productoBD);
+                ventaEncontrada.getListaDeItems().add(itemVenta); // Agrego los items a lista de ventas una vez encontrada y vaciada
+                
+                // Asocio un productoVentaDTO a un ItemVentaResponseDTO y posteriormente agrego el producto a la lista (item).
+                ProductoVentaResponseDTOParaVenta produResponseVentaDTO = new ProductoVentaResponseDTOParaVenta(productoBD.getCodigoProducto(), productoBD.getNombre(), productoBD.getMarca(), productoBD.getCosto());
+                
+                ItemVentaResponseDTO  itemVentaResponseDTO = new ItemVentaResponseDTO(itemVenRequestDTO.getIdProducto(), itemVenRequestDTO.getCantidad(), produResponseVentaDTO);
+                listaDeItemsResponseDTO.add(itemVentaResponseDTO); // agrego a la lista de items que se devuelven abajo.
+
             } else { // si no hay stock;
                 throw new InsufficientStockException(
                         "No hay stock suficiente para el producto " + productoBD.getNombre()
                         + " con el codigo: " + productoBD.getCodigoProducto()
                         + " Stock actual:" + productoBD.getCantidadDisponible()
-                        + " Cantidad pedida: " + item.getCantidad());
+                        + " Cantidad pedida: " + itemVenRequestDTO.getCantidad());
             }
         }
 
-        ventaEncontrada.setFechaVenta(venta.getFechaVenta());
-        ventaEncontrada.setListaDeItems(venta.getListaDeItems());
-        ventaEncontrada.setUnCliente(venta.getUnCliente());
+        ventaEncontrada.setFechaVenta(ventaRequestDTO.getFechaVenta());
         ventaEncontrada.setTotal(costoTotal);
+        ventaEncontrada.setUnCliente(clienteEncontrado);
         ventaRepo.save(ventaEncontrada);
 
-        return ventaEncontrada;
+        ClienteResponseDTOParaVenta clienteResponseDTO = new ClienteResponseDTOParaVenta(clienteEncontrado.getNombre(), clienteEncontrado.getApellido(), clienteEncontrado.getDni());
+
+        // Devuelvo el ventaResponseDTO
+        VentaResponseDTO ventaResponseDTO = new VentaResponseDTO(id, costoTotal, ventaRequestDTO.getFechaVenta(), listaDeItemsResponseDTO, clienteResponseDTO);
+
+        return ventaResponseDTO;
     }
 
     // Devuelve los productos de una venta 
