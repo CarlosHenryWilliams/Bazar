@@ -31,35 +31,35 @@ public class ClienteController {
     @Autowired
     IClienteService clienteServ;
 
-    // lectura 
+    // Obtener todos los Clientes
     @GetMapping("/clientes")
     public ResponseEntity<List<ClienteResponseDTO>> getClientes() {
         List<ClienteResponseDTO> listaCliResponseDTO = clienteServ.getClientes();
         return new ResponseEntity<>(listaCliResponseDTO, HttpStatus.OK);
     }
 
-    // lectura de un solo objeto
+    // Obtener un solo Cliente
     @GetMapping("/clientes/{id}")
     public ResponseEntity<ClienteResponseDTO> findCliente(@PathVariable Long id) {
         ClienteResponseDTO cliResponseDTO = clienteServ.findCliente(id);
         return new ResponseEntity<>(cliResponseDTO, HttpStatus.OK);
     }
 
-    // alta
+    // Dar de alta un Cliente
     @PostMapping("/clientes/crear")
     public ResponseEntity<ClienteResponseDTO> saveCliente(@RequestBody @Valid ClienteRequestDTO cliRequestDTO) {
         ClienteResponseDTO cliResponseDTO = clienteServ.saveCliente(cliRequestDTO);
         return new ResponseEntity<>(cliResponseDTO, HttpStatus.CREATED);
     }
 
-    // baja
+    // Eliminar un Cliente
     @DeleteMapping("/clientes/eliminar/{id}")
     public ResponseEntity<String> deleteCliente(@PathVariable Long id) {
         clienteServ.deleteCliente(id);
         return new ResponseEntity<>("El cliente ha sido borrado con exito", HttpStatus.OK);
     }
 
-    // edicion
+    // Editar un Cliente
     @PutMapping("/clientes/editar/{id}")
     public ResponseEntity<ClienteResponseDTO> editCliente(@PathVariable Long id, @RequestBody @Valid ClienteRequestDTO cliRequestDTO) {
         ClienteResponseDTO cliResponseDTO = clienteServ.editCliente(id, cliRequestDTO);

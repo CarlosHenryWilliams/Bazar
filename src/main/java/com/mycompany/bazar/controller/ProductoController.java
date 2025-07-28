@@ -6,7 +6,6 @@ package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.dto.ProductoRequestDTO;
 import com.mycompany.bazar.dto.ProductoResponseDTO;
-import com.mycompany.bazar.model.Producto;
 import com.mycompany.bazar.service.IProductoService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,41 +30,41 @@ public class ProductoController {
     @Autowired
     IProductoService produServ;
 
-    // lectura
+    // Obtener todos los Productos
     @GetMapping("/productos")
     public ResponseEntity<List<ProductoResponseDTO>> getProductos() {
         List<ProductoResponseDTO> listaProduResponseDTO= produServ.getProductos();
         return new ResponseEntity<>(listaProduResponseDTO, HttpStatus.OK);
     }
 
-    // lectura de un solo objeto
+    // Obtener un solo Producto
     @GetMapping("/productos/{id}")
     public ResponseEntity<ProductoResponseDTO> findProducto(@PathVariable Long id) {
         ProductoResponseDTO produResponseDTO = produServ.findProducto(id);
         return new ResponseEntity<>(produResponseDTO, HttpStatus.OK);
     }
 
-    // alta
+    // Dar de alta un Producto
     @PostMapping("/productos/crear")
     public ResponseEntity<ProductoResponseDTO> saveProducto(@RequestBody @Valid ProductoRequestDTO produRequestDTO) {
         ProductoResponseDTO produResponseDTO = produServ.saveProducto(produRequestDTO);
         return new ResponseEntity<>(produResponseDTO, HttpStatus.CREATED);
     }
 
-    // baja
+    // Dar de baja un producto
     @DeleteMapping("/productos/eliminar/{id}")
     public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
         produServ.deleteProducto(id);
         return new ResponseEntity<>("Se ha eliminado el producto con el codigo: " + id + " con exito.", HttpStatus.OK);
     }
 
-    // edicion
+    // Editar un producto
     @PutMapping("/productos/editar/{id}")
     public ResponseEntity<ProductoResponseDTO> editProducto(@PathVariable Long id, @RequestBody @Valid ProductoRequestDTO produRequestDTO) {
         ProductoResponseDTO produResponseDTO = produServ.editProducto(id,produRequestDTO);
         return new ResponseEntity<>(produResponseDTO, HttpStatus.OK);
     }
-
+    // Obtener productos con falta de stock menores a 5
     @GetMapping("/productos/falta_stock")
     public ResponseEntity<List<ProductoResponseDTO>> findBycantidadDisponibleLessThan() {
         return new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);

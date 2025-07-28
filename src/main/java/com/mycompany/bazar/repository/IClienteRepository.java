@@ -15,5 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IClienteRepository extends JpaRepository<Cliente, Long> {
-    public Optional<Cliente> findClienteBydni(String dni); // usar optional para tratar el orElseThrow
+    public Optional<Cliente> findClienteBydni(String dni); //  Con el optional se puede usar el orElseThrow
 }
