@@ -32,7 +32,6 @@ public class GlobalHandlerException {
     //Validacion de campos JSON PARSE
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handlerHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-                
         return new ResponseEntity<>("Por favor revise que todos los campos sean del tipo correcto.", HttpStatus.BAD_REQUEST);
     }
 
@@ -42,8 +41,8 @@ public class GlobalHandlerException {
         Map<String, String> errorsMap = new HashMap<>();  // clave : key
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             
-            String fieldName =  error.getField(); // nombre del campo
-            String messageError = error.getDefaultMessage(); // mensaje de error
+            String fieldName =  error.getField(); 
+            String messageError = error.getDefaultMessage(); 
             errorsMap.put(fieldName, messageError); // agrego al mapa
         });
         return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);

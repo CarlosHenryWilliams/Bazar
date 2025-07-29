@@ -27,9 +27,15 @@ public class ProductoService implements IProductoService {
 
     @Override
     @Transactional(readOnly = true)
+    public Producto validarProducto(Long id) {
+        return produRepo.findById(id).orElseThrow(()-> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ProductoResponseDTO> getProductos() {
-      
-        List<Producto> listaProductos =  produRepo.findAll();
+
+        List<Producto> listaProductos = produRepo.findAll();
         List<ProductoResponseDTO> listaProduResponseDTO = new ArrayList<>();
         for (Producto produ : listaProductos) {
             listaProduResponseDTO.add(new ProductoResponseDTO(produ.getCodigoProducto(), produ.getNombre(), produ.getMarca(), produ.getCosto(), produ.getCantidadDisponible()));
@@ -41,7 +47,7 @@ public class ProductoService implements IProductoService {
     @Override
     @Transactional(readOnly = true)
     public ProductoResponseDTO findProducto(Long id) {
-        Producto produ = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
+        Producto produ = this.validarProducto(id);
         ProductoResponseDTO produResponseDTO = new ProductoResponseDTO(produ.getCodigoProducto(), produ.getNombre(), produ.getMarca(), produ.getCosto(), produ.getCantidadDisponible());
         return produResponseDTO;
     }
@@ -58,14 +64,14 @@ public class ProductoService implements IProductoService {
     @Override
     @Transactional
     public void deleteProducto(Long id) {
-        Producto produ = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
-        produRepo.deleteById(produ.getCodigoProducto());
+        Producto producto =  this.validarProducto(id);
+        produRepo.deleteById(producto.getCodigoProducto());
     }
 
     @Override
     @Transactional
     public ProductoResponseDTO editProducto(Long id, ProductoRequestDTO produRequestDTO) {
-        Producto producto = produRepo.findById(id).orElseThrow(() -> new ProductoNotFoundException("El producto con el codigo: " + id + " no existe."));
+        Producto producto  = this.validarProducto(id);
 
         producto.setNombre(produRequestDTO.getNombre());
         producto.setMarca(produRequestDTO.getMarca());

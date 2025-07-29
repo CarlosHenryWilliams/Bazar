@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface IVentaService {
 
+    public Venta validarVenta(Long id);
+
     // lectura
     public List<VentaResponseDTO> getVentas();
 
@@ -39,9 +41,8 @@ public interface IVentaService {
 
     // Devuelve todas las ventas con la cantidad y la suma de tal fecha
     public VentaFechaDTO findAllByfechaVentaMontoCantidad(LocalDate fecha);
-    
+
     // Devuelve la mayor venta hasta el momentot
     public VentaUsuarioMayorVentaDTO getMayorVenta();
-    
 
 }

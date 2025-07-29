@@ -46,6 +46,12 @@ public class VentaService implements IVentaService {
 
     @Override
     @Transactional(readOnly = true)
+    public Venta validarVenta(Long id) {
+        return ventaRepo.findById(id).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + id + "no existe."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<VentaResponseDTO> getVentas() {
 
         List<VentaResponseDTO> listaVentas = new ArrayList<>();
@@ -66,7 +72,7 @@ public class VentaService implements IVentaService {
     @Override
     @Transactional(readOnly = true)
     public VentaResponseDTO findVenta(Long id) {
-        Venta ven = ventaRepo.findById(id).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + id + " no existe."));
+        Venta ven = this.validarVenta(id);
         // Creo los DTO's para la Venta.
         ClienteResponseDTOParaVenta cliResDTO = new ClienteResponseDTOParaVenta(ven.getUnCliente().getNombre(), ven.getUnCliente().getApellido(), ven.getUnCliente().getDni());
         List<ItemVentaResponseDTO> listaItemsResponseDTO = new ArrayList<>();
@@ -149,7 +155,7 @@ public class VentaService implements IVentaService {
     @Override
     @Transactional
     public void deleteVenta(Long id) {
-        Venta ventaAEliminar = ventaRepo.findById(id).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + id + " no existe."));
+        Venta ventaAEliminar = this.validarVenta(id);
         // Recorro la lista de items de la venta
         for (ItemVenta item : ventaAEliminar.getListaDeItems()) {
             // Encuentro cada producto
@@ -168,7 +174,7 @@ public class VentaService implements IVentaService {
     @Transactional
     public VentaResponseDTO editVenta(Long id, VentaRequestDTO ventaRequestDTO) {
         //Reviso si encuentro la venta
-        Venta ventaEncontrada = ventaRepo.findById(id).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + id + " no existe."));
+        Venta ventaEncontrada = this.validarVenta(id);
 
         // Reviso si el cliente existe.
         Cliente clienteEncontrado = clienteRepo.findClienteBydni(ventaRequestDTO.getDniCliente()).orElseThrow(() -> new ClienteNotFoundException("El cliente con el DNI: " + ventaRequestDTO.getDniCliente() + "no existe."));
@@ -179,18 +185,11 @@ public class VentaService implements IVentaService {
                     () -> new ProductoNotFoundException("El producto con el id: " + item.getProducto().getCodigoProducto() + " no existe."));
             productoDB.setCantidadDisponible(productoDB.getCantidadDisponible() + item.getCantidad());
         }
-        
+
         // Limpiamos la lista de Items que ya tenia por defecto.
         ventaEncontrada.getListaDeItems().clear();  // Esto los remueve tambien automaticamente de la BD por el orphanRemoval = true en la clase Venta
         Double costoTotal = 0D;
 
-        
-        
-        
-        
-        
-        
-        
         // Comprobar que los items de la venta que llega tengan stock
         // y Agregar a la lista de Items de la Venta original a persistir.
         List<ItemVentaResponseDTO> listaDeItemsResponseDTO = new ArrayList<>(); // Lista de ItemsResponse a devolver
@@ -208,11 +207,11 @@ public class VentaService implements IVentaService {
                 // Agrego el itemVenta nuevo a la venta original diferenciando los DTO
                 ItemVenta itemVenta = new ItemVenta(itemVenRequestDTO.getCantidad(), ventaEncontrada, productoBD);
                 ventaEncontrada.getListaDeItems().add(itemVenta); // Agrego los items a lista de ventas una vez encontrada y vaciada
-                
+
                 // Asocio un productoVentaDTO a un ItemVentaResponseDTO y posteriormente agrego el producto a la lista (item).
                 ProductoVentaResponseDTOParaVenta produResponseVentaDTO = new ProductoVentaResponseDTOParaVenta(productoBD.getCodigoProducto(), productoBD.getNombre(), productoBD.getMarca(), productoBD.getCosto());
-                
-                ItemVentaResponseDTO  itemVentaResponseDTO = new ItemVentaResponseDTO(itemVenRequestDTO.getIdProducto(), itemVenRequestDTO.getCantidad(), produResponseVentaDTO);
+
+                ItemVentaResponseDTO itemVentaResponseDTO = new ItemVentaResponseDTO(itemVenRequestDTO.getIdProducto(), itemVenRequestDTO.getCantidad(), produResponseVentaDTO);
                 listaDeItemsResponseDTO.add(itemVentaResponseDTO); // agrego a la lista de items que se devuelven abajo.
 
             } else { // si no hay stock;
@@ -241,7 +240,7 @@ public class VentaService implements IVentaService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemVentaResponseDTO> findlistaDeItemsByCodigoVenta(Long codigoVenta) {
-        Venta ventaEncontrada = ventaRepo.findById(codigoVenta).orElseThrow(() -> new VentaNotFoundException("La venta con el codigo: " + codigoVenta + " no existe."));
+        Venta ventaEncontrada = this.validarVenta(codigoVenta);
         List<ItemVentaResponseDTO> listaItemsVenta = new ArrayList<>();
         for (ItemVenta item : ventaEncontrada.getListaDeItems()) {
             // Creo un productoDTO
@@ -275,11 +274,7 @@ public class VentaService implements IVentaService {
     @Override
     @Transactional(readOnly = true)
     public VentaUsuarioMayorVentaDTO getMayorVenta() {
-        Venta venta = ventaRepo.findFirstByOrderByTotalDesc();
-        if (venta == null) {
-            throw new VentaNotFoundException("No se encuentran ventas registradas en el sistema.");
-        }
-        this.findVenta(venta.getCodigoVenta());
+        Venta venta = ventaRepo.findFirstByOrderByTotalDesc().orElseThrow(()-> new VentaNotFoundException("No se encuentran ventas registradas en el sistema."));
         return new VentaUsuarioMayorVentaDTO(venta.getCodigoVenta(), venta.getUnCliente().getNombre(), venta.getUnCliente().getApellido(), venta.getListaDeItems().size(), venta.getTotal());
     }
 

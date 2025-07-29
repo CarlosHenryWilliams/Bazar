@@ -15,6 +15,8 @@ import java.util.List;
  */
 public interface IProductoService {
 
+    public Producto validarProducto(Long id);
+    
     // lectura
     public List<ProductoResponseDTO> getProductos();
 

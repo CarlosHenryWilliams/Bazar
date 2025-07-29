@@ -27,6 +27,12 @@ public class ClienteService implements IClienteService {
 
     @Override
     @Transactional(readOnly = true)
+    public Cliente validarCliente(Long id) {
+        return clienteRepo.findById(id).orElseThrow(() -> new ClienteNotFoundException("El cliente con el id: " + id + " no existe."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ClienteResponseDTO> getClientes() {
         List<Cliente> listaClientes = clienteRepo.findAll();
         List<ClienteResponseDTO> listaCliResponseDTO = new ArrayList<>();
@@ -40,7 +46,7 @@ public class ClienteService implements IClienteService {
     @Override
     @Transactional(readOnly = true)
     public ClienteResponseDTO findCliente(Long id) {
-        Cliente cli = clienteRepo.findById(id).orElseThrow(() -> new ClienteNotFoundException("El cliente con el id: " + id + " no existe."));
+        Cliente cli = this.validarCliente(id);
         ClienteResponseDTO cliResponseDTO = new ClienteResponseDTO(cli.getIdCliente(), cli.getNombre(), cli.getApellido(), cli.getDni());
         return cliResponseDTO;
     }
@@ -65,8 +71,7 @@ public class ClienteService implements IClienteService {
     @Transactional
     public ClienteResponseDTO editCliente(Long id, ClienteRequestDTO cliRequestDTO) {
 
-        Cliente cliente = clienteRepo.findById(id).orElseThrow(() -> new ClienteNotFoundException("El cliente con el id: " + id + " no existe."));
-        // si existe, lo edito
+        Cliente cliente = this.validarCliente(id);
         cliente.setNombre(cliRequestDTO.getNombre());
         cliente.setApellido(cliRequestDTO.getApellido());
         cliente.setDni(cliRequestDTO.getDni());
