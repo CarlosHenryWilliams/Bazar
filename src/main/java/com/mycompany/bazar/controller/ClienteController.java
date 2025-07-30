@@ -6,7 +6,6 @@ package com.mycompany.bazar.controller;
 
 import com.mycompany.bazar.dto.ClienteRequestDTO;
 import com.mycompany.bazar.dto.ClienteResponseDTO;
-import com.mycompany.bazar.model.Cliente;
 import com.mycompany.bazar.service.IClienteService;
 import jakarta.validation.Valid;
 import java.util.List;
