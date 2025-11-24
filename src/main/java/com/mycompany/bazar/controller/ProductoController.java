@@ -45,21 +45,21 @@ public class ProductoController {
     }
 
     // Dar de alta un Producto
-    @PostMapping("/productos/crear")
+    @PostMapping("/productos")
     public ResponseEntity<ProductoResponseDTO> saveProducto(@RequestBody @Valid ProductoRequestDTO produRequestDTO) {
         ProductoResponseDTO produResponseDTO = produServ.saveProducto(produRequestDTO);
         return new ResponseEntity<>(produResponseDTO, HttpStatus.CREATED);
     }
 
     // Dar de baja un producto
-    @DeleteMapping("/productos/eliminar/{id}")
-    public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
+    @DeleteMapping("/productos/{id}")
+    public ResponseEntity<Void> deleteProducto(@PathVariable Long id) {
         produServ.deleteProducto(id);
-        return new ResponseEntity<>("Se ha eliminado el producto con el codigo: " + id + " con exito.", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Editar un producto
-    @PutMapping("/productos/editar/{id}")
+    @PutMapping("/productos/{id}")
     public ResponseEntity<ProductoResponseDTO> editProducto(@PathVariable Long id, @RequestBody @Valid ProductoRequestDTO produRequestDTO) {
         ProductoResponseDTO produResponseDTO = produServ.editProducto(id,produRequestDTO);
         return new ResponseEntity<>(produResponseDTO, HttpStatus.OK);
