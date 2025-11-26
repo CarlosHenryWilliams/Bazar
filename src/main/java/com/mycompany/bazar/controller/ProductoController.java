@@ -51,7 +51,7 @@ public class ProductoController {
         return new ResponseEntity<>(produResponseDTO, HttpStatus.CREATED);
     }
 
-    // Dar de baja un producto
+    // Eliminar un producto
     @DeleteMapping("/productos/{id}")
     public ResponseEntity<Void> deleteProducto(@PathVariable Long id) {
         produServ.deleteProducto(id);
@@ -67,6 +67,6 @@ public class ProductoController {
     // Obtener productos con falta de stock menores a 5
     @GetMapping("/productos/falta_stock")
     public ResponseEntity<List<ProductoResponseDTO>> findBycantidadDisponibleLessThan() {
-        return new ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
+        return new  ResponseEntity<>(produServ.findBycantidadDisponibleLessThan(5), HttpStatus.OK);
     }
 }
